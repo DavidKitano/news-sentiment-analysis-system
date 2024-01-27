@@ -1,0 +1,74 @@
+name: Docker-Image-Build-Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  Prior_Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Node Install
+        uses: actions/setup-node@v4.0.1
+        with:
+          node-version: '20.11.0'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.4.0
+        with:
+          version: latest
+          run_install: false
+
+      - name: Dependencies Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Code Lint
+        run: pnpm run lint
+
+      - name: Code Spell Check
+        run: pnpm run spell-check
+
+      - name: Code Type Check
+        run: pnpm run type-check
+
+      - name: Unit Test
+        run: pnpm run test:unit
+
+      - name: Build
+        run: pnpm run build
+
+  Docker_Image_Generate:
+    needs: Prior_Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Node Install
+        uses: actions/setup-node@v4.0.1
+        with:
+          node-version: '20.11.0'
+
+      - name: Docker Image Push
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker build . --file Dockerfile --tag ${{ secrets.DOCKER_REPOSITORY }}:latest
+          docker push ${{ secrets.DOCKER_REPOSITORY }}:latest
+
+  Jenkins_Deploy:
+    needs: Docker_Image_Generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Trigger
+        run: |
+          response=$(curl -o /dev/null -s -w "%{http_code}\n" -u ${{ secrets.JENKINS_AUTH }} -X POST "https://${{ secrets.JENKINS_REPOSITORY }}/buildWithParameters?image=${{ secrets.DOCKER_REPOSITORY }}:latest")
+          if [ "$response" -eq 201 ]; then
+            echo "Build triggered successfully."
+          else
+            echo "Failed to trigger build. HTTP Status: $response"
+            exit 1
+          fi
