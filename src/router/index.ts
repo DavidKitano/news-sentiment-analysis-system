@@ -17,6 +17,33 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/about/index.vue')
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      redirect: '/auth/login',
+      children: [
+        {
+          path: 'login',
+          name: 'login',
+          component: () => import('../views/auth/login.vue')
+        },
+        {
+          path: 'register',
+          name: 'register',
+          component: () => import('../views/auth/register.vue')
+        },
+        {
+          path: 'forget',
+          name: 'forgetPw',
+          component: () => import('../views/auth/forget-password.vue')
+        }
+      ]
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/auth/404.vue')
     }
   ]
 })
