@@ -7,10 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ElAside: typeof import('element-plus/es')['ElAside']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDrawer: typeof import('element-plus/es')['ElDrawer']
+    ElFooter: typeof import('element-plus/es')['ElFooter']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElHeader: typeof import('element-plus/es')['ElHeader']
@@ -24,9 +26,14 @@ declare module 'vue' {
     IconEcosystem: typeof import('./components/icons/icon-ecosystem.vue')['default']
     IconSupport: typeof import('./components/icons/icon-support.vue')['default']
     IconTooling: typeof import('./components/icons/icon-tooling.vue')['default']
+    InfiniteScroll: typeof import('./components/common/infinite-scroll.vue')['default']
+    NewsBox: typeof import('./components/news/news-box.vue')['default']
     PravicyAgree: typeof import('./components/common/pravicy-agree.vue')['default']
     PrivacyAgree: typeof import('./components/common/privacy-agree.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+  }
+  export interface ComponentCustomProperties {
+    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
   }
 }
