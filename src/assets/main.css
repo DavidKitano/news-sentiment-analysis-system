@@ -1,2 +1,9 @@
 @import './base.css';
 
+.pointer {
+  cursor: pointer;
+}
+
+.backtop {
+  z-index: 999999 !important;
+}

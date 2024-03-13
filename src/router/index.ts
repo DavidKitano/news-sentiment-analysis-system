@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/home/index.vue'
 import { checkVersionUpdate } from '@/utils/versionCheck'
 
 const router = createRouter({
@@ -7,15 +6,13 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      alias: ['/home', '/index', '/news'],
       name: 'home',
-      component: HomeView
+      component: () => import('../views/home/index.vue')
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/about/index.vue')
     },
     {
@@ -32,11 +29,6 @@ const router = createRouter({
           path: 'register',
           name: 'register',
           component: () => import('../views/auth/register.vue')
-        },
-        {
-          path: 'forget',
-          name: 'forgetPw',
-          component: () => import('../views/auth/forget-password.vue')
         }
       ]
     },

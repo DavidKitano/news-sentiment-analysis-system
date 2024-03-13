@@ -30,3 +30,5 @@ coverage
 *.tsbuildinfo
 
 public/version.json
+
+*.snap

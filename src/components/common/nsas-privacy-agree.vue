@@ -58,7 +58,8 @@ const isAgreed = ref(false)
 const isBottom = ref(false)
 const privacyCountDown = ref(5)
 const isAvailable = computed(() => {
-  return isBottom.value && privacyCountDown.value <= 0
+  // return isBottom.value && privacyCountDown.value <= 0
+  return privacyCountDown.value <= 0
 })
 const showDrawer = computed({
   set(val: boolean) {
@@ -124,6 +125,7 @@ onMounted(() => {
   margin-bottom: 1.5rem;
   font-size: 1rem;
   text-indent: 2rem;
+  color: #252525;
 }
 </style>
 <style lang="scss"></style>

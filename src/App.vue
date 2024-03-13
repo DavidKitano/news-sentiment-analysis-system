@@ -1,23 +1,23 @@
 <template>
-  <div class="common-layout">
-    <el-container>
-      <el-aside width="200px">Aside</el-aside>
-      <el-container class="common-content">
-        <el-header>Header</el-header>
-        <el-main>
-          <infinite-scroll />
-        </el-main>
-        <el-footer>Footer</el-footer>
-      </el-container>
-      <el-aside width="200px">Aside</el-aside>
-    </el-container>
-  </div>
-  <privacy-agree :title="privacyContent.title" :content="privacyContent.content" />
+  <nsas-welcome v-if="isWelcomeShow" v-model="isWelcomeShow" />
+  <template v-else>
+    <nsas-menu v-if="isMenuShow" />
+    <router-view class="menu-padding" />
+    <el-backtop class="backtop" :right="100" :bottom="100" />
+    <nsas-privacy-agree :title="privacyContent.title" :content="privacyContent.content" />
+  </template>
 </template>
 <script setup lang="ts">
-// import { RouterLink } from 'vue-router'
-// import HelloWorld from '@/components/common/hello-world.vue'
 import { fetchVersionFile } from './utils/versionCheck'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+const isWelcomeShow = ref<boolean>(true)
+
+const isMenuShow = computed(() => {
+  return !route.path.includes('auth')
+})
 
 const privacyContent = {
   title: '隐私 & Cookies使用协议',
@@ -75,37 +75,8 @@ onMounted(async () => {
   msg.value.version = await fetchVersionFile()
 })
 </script>
-
 <style lang="scss" scoped>
-.common-layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  .common-content {
-    min-width: 600px;
-  }
-  .el-container {
-    height: 100%;
-  }
-  .el-header {
-    background-color: #f56c6c;
-    color: #fff;
-    line-height: 60px;
-  }
-  .el-aside {
-    background-color: #d3dce6;
-    min-width: 300px;
-  }
-  .el-main {
-    background-color: #e9eef3;
-    height: calc(100vh - 120px);
-  }
-  .el-footer {
-    background-color: #f56c6c;
-    color: #fff;
-    line-height: 60px;
-    text-align: center;
-  }
+.menu-padding {
+  padding-top: var(--el-menu-horizontal-height);
 }
 </style>

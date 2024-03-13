@@ -63,6 +63,13 @@ export default defineConfig({
       '@api': fileURLToPath(new URL('./src/api', import.meta.url))
     }
   },
+  test: {
+    server: {
+      deps: {
+        inline: ['element-plus']
+      }
+    }
+  },
   server: {
     host: '0.0.0.0',
     port: 80
