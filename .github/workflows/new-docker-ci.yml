@@ -3,7 +3,7 @@ name: Docker-Image-Build-Pipeline
 on:
   push:
     tags:
-      - 'v-init-*'
+      - 'init-*'
 
 jobs:
   Prior_Build:
