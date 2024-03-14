@@ -1,4 +1,4 @@
-name: Docker-Image-Build-Pipeline
+name: New-Docker-CI
 
 on:
   push:
