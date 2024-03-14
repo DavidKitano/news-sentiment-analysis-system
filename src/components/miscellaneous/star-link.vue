@@ -1,35 +1,19 @@
 <template>
-  <canvas id="canvas"> 对不起, 你的浏览器不支持画布, 请升级浏览器! </canvas>
-  <section id="text">
-    <h2>现在时间</h2>
-    <span><nsas-countdown /></span>
-    <el-divider />
-    <div>
-      <img src="/logo-bg.png" alt="NSAS Logo" :draggable="false" />
-      <div>
-        <h1>新闻舆情分析系统</h1>
-        <h2>
-          <span class="highlight">N</span>ews&nbsp;<span class="highlight">S</span>entiments&nbsp;<span
-            class="highlight"
-            >A</span
-          >nalysis&nbsp;<span class="highlight">S</span>ystem
-        </h2>
-      </div>
-    </div>
-    <el-button type="primary" size="large" plain :auto-insert-space="true" @click="closeWelcome"> 进入 </el-button>
-  </section>
+  <canvas :class="customizedClass" id="canvas"> 对不起, 你的浏览器不支持画布, 请升级浏览器! </canvas>
+  <slot></slot>
 </template>
 <script lang="ts" setup>
-const props = defineProps<{
-  modelValue: boolean
-}>()
+const props = defineProps<{ class?: string | Array<string> }>()
 
-const emit = defineEmits(['update:modelValue'])
+const customizedClass = computed(() => {
+  const prefix = 'canvas-container '
+  if (Array.isArray(props.class)) {
+    return prefix + props.class.join(' ')
+  }
+  return prefix + props.class
+})
 
-const closeWelcome = () => {
-  emit('update:modelValue', !props.modelValue)
-}
-
+let resize: EventListenerOrEventListenerObject
 onMounted(() => {
   let num = 200 //星星数
   const star: { [key: string]: number }[] = [] //星星位置
@@ -43,7 +27,7 @@ onMounted(() => {
   //获取上下文
   const ctx = canvas.getContext('2d')
 
-  const resize = () => {
+  resize = () => {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
   }
@@ -145,6 +129,10 @@ onMounted(() => {
     link(e.clientX, e.clientY)
   })
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resize)
+})
 </script>
 <style lang="scss" scoped>
 #canvas {
@@ -155,44 +143,5 @@ onMounted(() => {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-#text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  text-align: center;
-
-  .el-button {
-    width: 10rem;
-    font-size: 1rem;
-    margin: 20px;
-  }
-
-  .highlight {
-    color: rgb(255, 200, 0);
-  }
-
-  p {
-    font-size: 2rem;
-    vertical-align: middle;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  h1 {
-    font-size: 2rem;
-    margin: 0;
-  }
-
-  img {
-    width: 120px;
-    height: 120px;
-    margin: 0 10px;
-    clip-path: circle(50%);
-  }
 }
 </style>

@@ -7,6 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AuthError: typeof import('./components/auth/auth-error.vue')['default']
+    AuthLogin: typeof import('./components/auth/auth-login.vue')['default']
+    AuthNonLoggedBox: typeof import('./components/auth/auth-non-logged-box.vue')['default']
+    AuthRegister: typeof import('./components/auth/auth-register.vue')['default']
+    AuthUnloggedBox: typeof import('./components/auth/auth-unlogged-box.vue')['default']
+    AuthView: typeof import('./components/auth/auth-view.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
@@ -14,6 +20,7 @@ declare module 'vue' {
     ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElContainer: typeof import('element-plus/es')['ElContainer']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElEmpty: typeof import('element-plus/es')['ElEmpty']
     ElFooter: typeof import('element-plus/es')['ElFooter']
@@ -37,14 +44,18 @@ declare module 'vue' {
     IEpUserFilled: typeof import('~icons/ep/user-filled')['default']
     NewsBox: typeof import('./components/news/news-box.vue')['default']
     NsasBox: typeof import('./components/common/nsas-box.vue')['default']
-    NsasCountdown: typeof import('./components/common/nsas-countdown.vue')['default']
+    NsasCountdown: typeof import('./components/miscellaneous/nsas-countdown.vue')['default']
+    NsasDialog: typeof import('./components/common/nsas-dialog.vue')['default']
     NsasMenu: typeof import('./components/common/nsas-menu.vue')['default']
-    NsasPrivacyAgree: typeof import('./components/common/nsas-privacy-agree.vue')['default']
+    NsasPrivacyAgree: typeof import('./components/miscellaneous/nsas-privacy-agree.vue')['default']
     NsasStarlink: typeof import('./components/common/nsas-starlink.vue')['default']
     NsasStarLink: typeof import('./components/common/nsas-star-link.vue')['default']
-    NsasWelcome: typeof import('./components/common/nsas-welcome.vue')['default']
-    PrivacyAgree: typeof import('./components/common/privacy-agree.vue')['default']
+    NsasWelcome: typeof import('./components/miscellaneous/nsas-welcome.vue')['default']
+    PrivacyAgree: typeof import('./components/miscellaneous/privacy-agree.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StarLink: typeof import('./components/miscellaneous/star-link.vue')['default']
+    TimeCountdown: typeof import('./components/miscellaneous/time-countdown.vue')['default']
+    WelcomeInfo: typeof import('./components/miscellaneous/welcome-info.vue')['default']
   }
 }

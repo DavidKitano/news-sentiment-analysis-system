@@ -1,19 +1,16 @@
 <template>
-  <nsas-welcome v-if="isWelcomeShow" v-model="isWelcomeShow" />
-  <template v-else>
-    <nsas-menu v-if="isMenuShow" />
-    <router-view class="menu-padding" />
-    <el-backtop class="backtop" :right="100" :bottom="100" />
-    <nsas-privacy-agree :title="privacyContent.title" :content="privacyContent.content" />
-  </template>
+  <nsas-menu v-if="isMenuShow" />
+  <router-view />
+  <el-backtop class="backtop" :right="20" :bottom="50" />
+  <privacy-agree :title="privacyContent.title" :content="privacyContent.content" />
 </template>
 <script setup lang="ts">
 import { fetchVersionFile } from './utils/versionCheck'
 import { useRoute } from 'vue-router'
+import { useAuth } from './stores/auth/auth'
 
 const route = useRoute()
-
-const isWelcomeShow = ref<boolean>(true)
+const auth = useAuth()
 
 const isMenuShow = computed(() => {
   return !route.path.includes('auth')
@@ -72,11 +69,8 @@ const msg = ref({
 })
 
 onMounted(async () => {
+  auth.restoreAuth()
   msg.value.version = await fetchVersionFile()
 })
 </script>
-<style lang="scss" scoped>
-.menu-padding {
-  padding-top: var(--el-menu-horizontal-height);
-}
-</style>
+<style lang="scss" scoped></style>

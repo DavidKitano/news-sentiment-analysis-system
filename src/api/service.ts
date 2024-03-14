@@ -1,7 +1,9 @@
 import router from '@/router'
-import { auth, clearAuth } from '@/stores/common/auth'
+import { useAuth } from '@/stores/auth/auth'
 import axios, { AxiosError } from 'axios'
 import { ElMessage, ElNotification } from 'element-plus'
+
+const { clearAuth, isLogin } = useAuth()
 
 export type Response<T> = Promise<[boolean, T]>
 type ErrorCodeMap = {
@@ -82,7 +84,7 @@ let redirectTimer: any = 0
 
 api.interceptors.request.use((config: any) => {
   // 无需登录态的接口
-  if (['/login'].indexOf(config.url as string) !== -1 || auth.value.hasLogin) {
+  if (['/login'].indexOf(config.url as string) !== -1 || isLogin) {
     return config
   }
 

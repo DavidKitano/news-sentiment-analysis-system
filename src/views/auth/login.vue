@@ -1,33 +1,34 @@
 <template>
-  <el-container id="authContainer">
-    <el-header>登录</el-header>
-    <el-main>
-      <el-form label-width="80px">
-        <el-form-item label="用户名">
-          <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="form.password" placeholder="请输入密码" type="password"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="login">登录</el-button>
-          <el-button type="primary" @click="login">注册</el-button>
-          <el-button type="primary" @click="login">忘记密码</el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
-  </el-container>
+  <star-link>
+    <nsas-dialog v-model="visible">
+      <template #header>
+        <h2>登录</h2>
+      </template>
+      <auth-login />
+      <template #footer>
+        <el-divider style="margin: 1em" />
+        <el-button text type="primary" @click="gotoHomePage">返回主页</el-button>
+      </template>
+    </nsas-dialog>
+  </star-link>
 </template>
+<script setup lang="ts">
+import { useAuth } from '@/stores/auth/auth'
+import { useRouter } from 'vue-router'
 
-<script lang="ts" setup>
-const form = ref({
-  username: '',
-  password: ''
-})
+const router = useRouter()
+const auth = useAuth()
 
-const login = () => {
-  console.log(form.value)
+const visible = ref(true)
+
+const gotoHomePage = () => {
+  router.push('/')
 }
-</script>
 
+onBeforeMount(() => {
+  if (auth.isLogin) {
+    router.push('/')
+  }
+})
+</script>
 <style lang="scss" scoped></style>

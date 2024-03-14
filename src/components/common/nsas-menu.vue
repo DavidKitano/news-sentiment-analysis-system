@@ -25,6 +25,7 @@
       </el-button-group>
     </el-menu>
   </section>
+  <div class="menu-padding"></div>
 </template>
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
@@ -66,5 +67,9 @@ const goAuth = (type: string) => {
   .flex-grow {
     flex-grow: 1;
   }
+}
+
+.menu-padding {
+  padding-top: var(--el-menu-horizontal-height);
 }
 </style>

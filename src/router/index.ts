@@ -17,8 +17,6 @@ const router = createRouter({
     },
     {
       path: '/auth',
-      name: 'auth',
-      redirect: '/auth/login',
       children: [
         {
           path: 'login',
@@ -29,6 +27,11 @@ const router = createRouter({
           path: 'register',
           name: 'register',
           component: () => import('../views/auth/register.vue')
+        },
+        {
+          path: 'forbidden',
+          name: 'forbidden',
+          component: () => import('../views/auth/403.vue')
         }
       ]
     },
@@ -40,7 +43,9 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async () => {
+const whiteList = ['forbidden', 'not-found', 'login', 'register', 'home']
+
+router.beforeEach(async (to, from, next) => {
   const res = await checkVersionUpdate()
   if (res) {
     ElMessageBox.alert('检测到新版本', '通知', {
@@ -50,6 +55,10 @@ router.beforeEach(async () => {
       return true
     })
   }
+  if (whiteList.includes(to.name as string)) {
+    return next()
+  }
+  return next('/auth/forbidden')
 })
 
 export default router
