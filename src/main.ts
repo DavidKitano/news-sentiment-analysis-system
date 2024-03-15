@@ -10,6 +10,10 @@ import _ from 'lodash-es'
 import App from './App.vue'
 import router from './router'
 
+import microApp from '@micro-zoe/micro-app'
+
+microApp.start()
+
 // 解决ResizeObserver loop limit exceeded
 const oldResizeObserver = window.ResizeObserver
 window.ResizeObserver = class ResizeObserver extends oldResizeObserver {

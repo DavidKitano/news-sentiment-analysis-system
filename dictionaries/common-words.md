@@ -54,6 +54,7 @@ iconify
 
 backtop
 
+qiankun
 
 ## 缩写词
 btn # button

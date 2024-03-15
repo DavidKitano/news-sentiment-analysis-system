@@ -14,7 +14,7 @@ export const useAuth = defineStore('auth', {
   },
   actions: {
     restoreAuth() {
-      const storageToken = localStorage.getItem('auth')
+      const storageToken = localStorage.getItem('nsasAuth')
       if (!storageToken) return
 
       this.token = storageToken
@@ -22,13 +22,13 @@ export const useAuth = defineStore('auth', {
     setAuth(_token: string) {
       this.token = _token
 
-      localStorage.setItem('auth', this.token)
+      localStorage.setItem('nsasAuth', this.token)
     },
     clearAuth() {
       this.token = ''
 
-      if (localStorage.getItem('auth')) {
-        localStorage.removeItem('auth')
+      if (localStorage.getItem('nsasAuth')) {
+        localStorage.removeItem('nsasAuth')
       }
     }
   }

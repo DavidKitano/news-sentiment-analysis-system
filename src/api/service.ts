@@ -1,11 +1,17 @@
 import router from '@/router'
 import { useAuth } from '@/stores/auth/auth'
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { ElMessage, ElNotification } from 'element-plus'
 
 const { clearAuth, isLogin } = useAuth()
 
 export type Response<T> = Promise<[boolean, T]>
+export type BaseResponse = {
+  code: number
+  data: any
+  msg: string
+}
+
 type ErrorCodeMap = {
   [key: number]: { title: string; message: string }
 }
@@ -74,13 +80,15 @@ const errorNotification = (status: number) => {
     customClass: 'global-error-notification'
   })
 }
+
 const api = axios.create({
   baseURL: '/api',
   headers: {
     'Content-type': 'application/json'
   }
 })
-let redirectTimer: any = 0
+
+let redirectTimer: NodeJS.Timeout | null = null
 
 api.interceptors.request.use((config: any) => {
   // 无需登录态的接口
@@ -88,17 +96,15 @@ api.interceptors.request.use((config: any) => {
     return config
   }
 
-  if (redirectTimer) {
-    return Promise.reject()
-  }
+  const error = new AxiosError('Request failed with status code 401', 'ERR_BAD_REQUEST', void 0, void 0, {
+    data: '',
+    status: 401,
+    statusText: 'Unauthorized',
+    headers: {},
+    config: {} as InternalAxiosRequestConfig
+  })
 
-  ElMessage.warning(errorCodeMap[401].message)
-
-  redirectTimer = setTimeout(() => {
-    router.push('/login')
-  }, 1500)
-
-  return Promise.reject()
+  return Promise.reject(error)
 })
 
 api.interceptors.response.use(
@@ -108,10 +114,10 @@ api.interceptors.response.use(
     }
     return Promise.resolve([response.data.code !== 0, response.data])
   },
-  (error: any) => {
+  (error) => {
     if (error instanceof AxiosError) {
       const _code = error.code || 'ERR_UNKNOWN'
-      return Promise.resolve([true, { message: axiosCodeMap[_code] }])
+      return Promise.resolve([true, { msg: axiosCodeMap[_code] }])
     }
 
     if (!error || !error.response) return Promise.resolve([true, {}])
