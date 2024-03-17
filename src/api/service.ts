@@ -85,7 +85,7 @@ const api = axios.create({
   baseURL: '/nsas-api'
 })
 
-let redirectTimer: NodeJS.Timeout | null = null
+let redirectTimer: any = null
 
 api.interceptors.request.use((config) => {
   config.headers.Authorization = auth.isLogin ? auth.bearerToken : 'Basic bmV3c19jbGllbnQ6bmV3c19zZWNyZXQ='
