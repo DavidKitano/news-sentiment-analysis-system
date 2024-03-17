@@ -53,3 +53,8 @@ const centerDialogVisible = computed({
   }
 })
 </script>
+<style lang="scss" scoped>
+:global(.el-dialog .el-main) {
+  padding: 0;
+}
+</style>

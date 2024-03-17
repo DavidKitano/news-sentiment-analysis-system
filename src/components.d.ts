@@ -33,12 +33,17 @@ declare module 'vue' {
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
+    ElOption: typeof import('element-plus/es')['ElOption']
+    ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
+    ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     HelloWorld: typeof import('./components/common/hello-world.vue')['default']
     IEpHelpFilled: typeof import('~icons/ep/help-filled')['default']
     IEpHomeFilled: typeof import('~icons/ep/home-filled')['default']
     IEpHouse: typeof import('~icons/ep/house')['default']
+    IEpPlus: typeof import('~icons/ep/plus')['default']
     IEpTrendCharts: typeof import('~icons/ep/trend-charts')['default']
     IEpUser: typeof import('~icons/ep/user')['default']
     IEpUserFilled: typeof import('~icons/ep/user-filled')['default']
@@ -57,5 +62,8 @@ declare module 'vue' {
     StarLink: typeof import('./components/miscellaneous/star-link.vue')['default']
     TimeCountdown: typeof import('./components/miscellaneous/time-countdown.vue')['default']
     WelcomeInfo: typeof import('./components/miscellaneous/welcome-info.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

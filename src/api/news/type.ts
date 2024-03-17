@@ -2,9 +2,9 @@ import type { BaseResponse } from '../service'
 
 /// app-news-show/news
 export interface AppNewsShowNewsRequest {
-  currentPage: number
-  pageSize: number
-  keyword: string
+  currentPage?: number
+  pageSize?: number
+  keyword?: string
 }
 export interface AppNewsShowNewsResponse extends BaseResponse {
   data: AppNewsShowNewsData

@@ -15,5 +15,8 @@
 ## 通类
 webapi
 
+bmV3c19jbGllbnQ6bmV3c19zZWNyZXQ
+
+jti
 
 ## 术语

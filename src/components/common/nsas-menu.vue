@@ -19,9 +19,12 @@
         人物图谱
       </el-menu-item>
       <div class="flex-grow" />
-      <el-button-group class="function-btn">
+      <el-button-group v-if="!auth.isLogin" class="function-btn">
         <el-button type="primary" @click="goAuth('login')">登录</el-button>
         <el-button type="primary" text @click="goAuth('register')"> 注册 </el-button>
+      </el-button-group>
+      <el-button-group v-else class="function-btn">
+        <el-button type="primary" text @click="goAuth('logout')"> 退出登录 </el-button>
       </el-button-group>
     </el-menu>
   </section>
@@ -29,9 +32,12 @@
 </template>
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
+import { useAuth } from '@/stores/auth/auth'
 
 const route = useRoute()
 const router = useRouter()
+
+const auth = useAuth()
 
 const defaultActive = computed(() => {
   const key = route.path.split('/')[1]
@@ -42,6 +48,11 @@ const defaultActive = computed(() => {
 })
 
 const goAuth = (type: string) => {
+  if (type === 'logout') {
+    auth.clearAuth()
+    router.replace('/')
+    return
+  }
   router.push(`/auth/${type}`)
 }
 </script>

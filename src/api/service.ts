@@ -3,7 +3,7 @@ import { useAuth } from '@/stores/auth/auth'
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { ElMessage, ElNotification } from 'element-plus'
 
-const { clearAuth, isLogin } = useAuth()
+const auth = useAuth()
 
 export type Response<T> = Promise<[boolean, T]>
 export type BaseResponse = {
@@ -82,17 +82,16 @@ const errorNotification = (status: number) => {
 }
 
 const api = axios.create({
-  baseURL: '/api',
-  headers: {
-    'Content-type': 'application/json'
-  }
+  baseURL: '/nsas-api'
 })
 
 let redirectTimer: NodeJS.Timeout | null = null
 
-api.interceptors.request.use((config: any) => {
+api.interceptors.request.use((config) => {
+  config.headers.Authorization = auth.isLogin ? auth.bearerToken : 'Basic bmV3c19jbGllbnQ6bmV3c19zZWNyZXQ='
+
   // 无需登录态的接口
-  if (['/login'].indexOf(config.url as string) !== -1 || isLogin) {
+  if (['/login'].indexOf(config.url as string) !== -1 || auth.isLogin || 1 === 1) {
     return config
   }
 
@@ -112,9 +111,18 @@ api.interceptors.response.use(
     if (Object.prototype.toString.call(response.data) === '[object Blob]') {
       return Promise.resolve([false, response.data])
     }
-    return Promise.resolve([response.data.code !== 0, response.data])
+    if (response.data.access_token || response.data.refresh_token) {
+      return Promise.resolve([false, response.data])
+    }
+    if (response.data.code === 402) {
+      return Promise.resolve([true, { msg: '请填写正确的内容' }]) // 402屏蔽
+    }
+    return Promise.resolve([response.data.code !== 200, response.data])
   },
   (error) => {
+    if (error.response.data.error === 'invalid_grant' && error.response.data.error_description === 'Bad credentials') {
+      return Promise.resolve([true, { msg: '用户名或密码错误，请重新输入' }])
+    }
     if (error instanceof AxiosError) {
       const _code = error.code || 'ERR_UNKNOWN'
       return Promise.resolve([true, { msg: axiosCodeMap[_code] }])
@@ -123,7 +131,7 @@ api.interceptors.response.use(
     if (!error || !error.response) return Promise.resolve([true, {}])
 
     if (error.response.status === 401) {
-      clearAuth()
+      auth.clearAuth()
 
       if (redirectTimer) return Promise.resolve([true, {}])
 

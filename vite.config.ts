@@ -73,25 +73,25 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 80
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://',
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/api/, '')
-    //   }
-    // }
+    port: 80,
+    proxy: {
+      '/nsas-api': {
+        target: 'http://120.25.103.178:800',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/nsas-api/, '')
+      }
+    }
   },
   preview: {
     host: '0.0.0.0',
-    port: 80
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://',
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/api/, '')
-    //   }
-    // }
+    port: 80,
+    proxy: {
+      '/nsas-api': {
+        target: 'http://120.25.103.178:800',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/nsas-api/, '')
+      }
+    }
   },
   build: {
     sourcemap: true,
