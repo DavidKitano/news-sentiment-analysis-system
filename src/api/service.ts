@@ -88,7 +88,6 @@ const api = axios.create({
 let redirectTimer: any = null
 
 api.interceptors.request.use((config) => {
-  console.log((config.url as string).indexOf('app-auth'))
   if ((config.url as string).indexOf('app-auth') !== -1) {
     config.headers.Authorization = 'Basic bmV3c19jbGllbnQ6bmV3c19zZWNyZXQ='
   } else {
@@ -122,9 +121,18 @@ api.interceptors.response.use(
     if (response.data.code === 402) {
       return Promise.resolve([true, { msg: '请填写正确的内容' }]) // 402屏蔽
     }
+    if (response.data.code === 401) {
+      auth.clearAuth()
+
+      if (redirectTimer) return Promise.resolve([true, {}])
+
+      redirectTimer = setTimeout(() => router.push('/auth/login'), 1500)
+      return Promise.resolve([true, { msg: errorCodeMap[401].message }])
+    }
     return Promise.resolve([response.data.code !== 200, response.data])
   },
   (error) => {
+    console.log(error)
     if (error.response.data.error === 'invalid_grant' && error.response.data.error_description === 'Bad credentials') {
       return Promise.resolve([true, { msg: '用户名或密码错误，请重新输入' }])
     }

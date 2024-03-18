@@ -270,7 +270,7 @@ export interface AlgorithmData {
   /**
    * 数据
    */
-  data?: { [key: string]: any }
+  data?: { [key: string]: any } | string | any[]
   /**
    * 标签页名称
    */

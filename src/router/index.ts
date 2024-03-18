@@ -6,7 +6,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      alias: ['/home', '/index', '/news'],
+      redirect: '/news'
+    },
+    {
+      path: '/news',
+      alias: ['/home', '/home/:newsId', '/index', '/index/:newsId', '/news/:newsId'],
       name: 'home',
       component: () => import('../views/home/index.vue')
     },

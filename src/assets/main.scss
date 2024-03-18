@@ -1,0 +1,29 @@
+@import './base.css';
+
+.pointer {
+  cursor: pointer;
+}
+
+.backtop {
+  z-index: 999999 !important;
+}
+
+.news-tag {
+  display: flex;
+  align-items: center;
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  .tag-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  h3,
+  h4,
+  h5 {
+    display: inline-block;
+    display: inline-flex;
+    color: gray;
+  }
+}

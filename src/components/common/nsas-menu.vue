@@ -1,20 +1,20 @@
 <template>
   <section id="menu">
-    <el-menu :default-active="defaultActive" class="el-menu" mode="horizontal" router>
+    <el-menu :default-active="defaultActive" class="el-menu" mode="horizontal">
       <img style="height: 84%" class="logo" src="/logo.png" :draggable="false" />
-      <el-menu-item index="news">
+      <el-menu-item index="news" @click="jumpTo('news')">
         <el-icon><i-ep-home-filled /></el-icon>
         新闻
       </el-menu-item>
-      <el-menu-item index="timeline">
+      <el-menu-item index="timeline" @click="jumpTo('timeline')">
         <el-icon><i-ep-help-filled /></el-icon>
         时间线
       </el-menu-item>
-      <el-menu-item index="trend">
+      <el-menu-item index="trend" @click="jumpTo('trend')">
         <el-icon><i-ep-trend-charts /></el-icon>
         舆情趋势
       </el-menu-item>
-      <el-menu-item index="atlas">
+      <el-menu-item index="atlas" @click="jumpTo('atlas')">
         <el-icon><i-ep-user-filled /></el-icon>
         人物图谱
       </el-menu-item>
@@ -56,12 +56,16 @@ const goAuth = (type: string) => {
   }
   router.push(`/auth/${type}`)
 }
+
+const jumpTo = (path: string) => {
+  router.push(`/${path}`)
+}
 </script>
 <style lang="scss" scoped>
 #menu {
   position: fixed;
   top: 0;
-  z-index: 1234;
+  z-index: 1000;
   overflow: hidden;
   min-width: 100%;
   margin-bottom: 10px;
