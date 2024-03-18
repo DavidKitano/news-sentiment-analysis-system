@@ -69,59 +69,32 @@
     <template #default>
       <el-scrollbar>
         <el-affix :offset="60">
-          <el-pagination
-            small
-            background
-            layout="sizes, prev, pager, next, ->, jumper, total"
-            :total="pageInfo.total"
-            :page-sizes="[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
+          <nsas-box style="width: 100%">
+            <el-pagination
+              small
+              background
+              layout="sizes, prev, pager, next, ->, jumper, total"
+              :total="pageInfo.total"
+              :page-sizes="[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+          /></nsas-box>
         </el-affix>
-        <nsas-box class="main-content" v-for="news in collectedNewsList" :key="news.title">
-          <template #header>
-            <h2 class="pointer news-title" @click="goToDetail(news.newsId)">{{ news.title }}</h2>
-            <section class="news-tag">
-              <h5>作者：</h5>
-              <el-tag type="info">{{ news.author || '匿名' }}</el-tag>
-              <el-divider direction="vertical" />
-              <h5>日期：</h5>
-              <el-tag type="info">{{ news.date }}</el-tag>
-              <el-divider direction="vertical" />
-              <div class="tag-group">
-                <h3>
-                  <el-icon><i-ep-star /></el-icon>
-                </h3>
-                <el-text>{{ news.collect }}</el-text>
-              </div>
-              <el-divider direction="vertical" />
-              <div class="tag-group">
-                <h3>
-                  <el-icon><i-ep-chat-line-square /></el-icon>
-                </h3>
-                <el-text>{{ news.commentCnt }}</el-text>
-              </div>
-              <el-divider direction="vertical" />
-              <div class="tag-group">
-                <h3>
-                  <el-icon><nsas-thumb-up /></el-icon>
-                </h3>
-                <el-text>{{ news.like }}</el-text>
-              </div>
+        <div v-if="collectedNewsList.length > 0">
+          <nsas-box class="main-content" v-for="news in collectedNewsList" :key="news.title">
+            <template #header>
+              <h2 class="pointer news-title" @click="goToDetail(news.newsId)">{{ news.title }}</h2>
+            </template>
+            <section class="news-box pointer" @click="goToDetail(news.newsId)">
+              <section class="news-avatar" v-if="news.avatar">
+                <el-image :src="news.avatar" :alt="news.title" style="width: 160px" lazy />
+              </section>
+              <h3>摘要</h3>
+              <el-text>{{ news.summary }}</el-text>
             </section>
-          </template>
-          <section class="news-box pointer" @click="goToDetail(news.newsId)">
-            <section class="news-avatar" v-if="news.avatar">
-              <el-image :src="news.avatar" :alt="news.title" style="width: 160px" lazy />
-            </section>
-            <h3>摘要</h3>
-            <el-text>{{ news.summary }}</el-text>
-            <br />
-            <h3>正文</h3>
-            <el-text class="news-body" line-clamp="4">{{ news.body }}</el-text>
-          </section>
-        </nsas-box>
+          </nsas-box>
+        </div>
+        <el-empty v-else description="没有收藏噢~" />
       </el-scrollbar>
     </template>
   </el-drawer>
@@ -130,7 +103,6 @@
 import { getCollect } from '@/api/news-collect'
 import type { newsData } from '@/api/news/type'
 import { useUser } from '@/stores/user/user'
-import { NsasThumbUp } from '@/assets/svg'
 
 const user = useUser()
 
@@ -138,7 +110,7 @@ const showDrawer = ref<boolean>(false)
 const loading = ref<boolean>(false)
 const collectedNewsList = ref<newsData[]>([])
 const pageInfo = ref({
-  currentPage: 1,
+  currentPage: 0,
   pageSize: 10,
   total: 0
 })
@@ -148,11 +120,11 @@ const goToDetail = async (id: string) => {
 }
 const handleSizeChange = async (val: number) => {
   pageInfo.value.pageSize = val
-  pageInfo.value.currentPage = 1
+  pageInfo.value.currentPage = 0
   await loadCollectedNewsList()
 }
 const handleCurrentChange = async (val: number) => {
-  pageInfo.value.currentPage = val
+  pageInfo.value.currentPage = val - 1
   await loadCollectedNewsList()
 }
 const showDrawerFunc = async () => {
@@ -183,6 +155,15 @@ $common-box-gap: 10px;
 :global(.user-info-drawer .el-drawer__header) {
   margin-bottom: 0;
 }
+.main-content {
+  margin-top: 1rem;
+}
+.news-title {
+  &:hover {
+    color: #409eff;
+    text-decoration: underline;
+  }
+}
 .info-box,
 .avatar-box {
   width: 100%;
@@ -194,22 +175,16 @@ $common-box-gap: 10px;
   gap: 5px;
 }
 
-.news-list {
-  display: flex;
-  flex-direction: column;
-  gap: $common-box-gap;
-  padding-top: $common-box-gap;
-  .news-avatar {
-    float: right;
-    padding: 0 0 0 10px;
-    z-index: 10;
-    height: 108px;
-    overflow: hidden;
+.news-avatar {
+  float: right;
+  padding: 0 0 0 10px;
+  z-index: 10;
+  height: 110px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  :deep(.el-image) {
     border-radius: 0.5rem;
-    :deep(.el-image) {
-      border-radius: 0.5rem;
-      padding: 0;
-    }
+    padding: 0;
   }
 }
 </style>
