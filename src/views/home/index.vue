@@ -1,6 +1,6 @@
 <template>
   <welcome-info class="welcome-info" v-if="isWelcomeShow" v-model="isWelcomeShow" />
-  <div class="common-layout" ref="containerRef">
+  <div class="common-layout" ref="containerRef" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadDisabled">
     <el-container class="container">
       <el-aside class="left-aside" width="200px">
         <nsas-box class="left-nav-bar"> aaa </nsas-box>
@@ -11,7 +11,7 @@
           <nsas-box class="header-nav-bar"> header </nsas-box>
         </el-header>
         <el-main>
-          <section class="news-list" ref="mainRef">
+          <section v-if="newsList.length > 0" class="news-list" ref="mainRef">
             <nsas-box
               class="main-content pointer"
               v-for="news in newsList"
@@ -20,26 +20,32 @@
             >
               <template #header>
                 <h2>{{ news.title }}</h2>
+                <section class="news-tag">
+                  <el-tag type="info">{{ news.author }}</el-tag>
+                  <el-divider direction="vertical" />
+                  <el-tag type="info">{{ news.date }}</el-tag>
+                </section>
               </template>
               <section class="news-box">
                 <section class="news-avatar" v-if="news.avatar">
                   <el-image :src="news.avatar" style="width: 200px" lazy />
                 </section>
                 <h3>摘要</h3>
-                <p>{{ news.summary }}</p>
+                <el-text>{{ news.summary }}</el-text>
                 <br />
                 <h3>正文</h3>
-                <p class="news-body">{{ news.body }}</p>
+                <el-text class="news-body" line-clamp="4">{{ news.body }}</el-text>
               </section>
               <template #footer>
-                <p>author: {{ news.author }}</p>
-                <p>date: {{ news.date }}</p>
                 <p>like: {{ news.like }}</p>
                 <p>collect: {{ news.collect }}</p>
                 <p>comment: {{ news.commentCnt }}</p>
               </template>
             </nsas-box>
           </section>
+          <p v-if="loading">Loading...</p>
+          <p v-if="noMore">No more</p>
+          <el-empty v-if="newsList.length <= 0" description="没有内容噢～" />
         </el-main>
       </el-container>
 
@@ -66,14 +72,35 @@ const auth = useAuth()
 const isWelcomeShow = ref<boolean>(true)
 const newsList = ref<newsData[]>([])
 const asideHeight = ref<string>('100%')
+const loading = ref<boolean>(false)
+const noMore = ref<boolean>(false)
 const mainRef = ref<HTMLElement | null>(null)
 const pageInfo = ref({
   currentPage: 0,
   pageSize: 10
 })
 
+const loadDisabled = computed(() => loading.value || noMore.value)
+
 const alertId = (id: string) => {
   window.alert(id)
+}
+
+const loadMore = async () => {
+  loading.value = true
+  pageInfo.value.currentPage++
+  try {
+    const [hasError, data] = await getNewsList(pageInfo.value)
+    if (hasError) {
+      return data?.msg && ElMessage.error(data.msg)
+    }
+    newsList.value.push(...data.data.content)
+  } catch (error) {
+    pageInfo.value.currentPage--
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 }
 
 onMounted(async () => {
@@ -86,7 +113,6 @@ onMounted(async () => {
   if (hasError) {
     return data?.msg && ElMessage.error(data.msg)
   }
-  console.log(data)
   newsList.value = data.data.content || []
 })
 </script>
@@ -117,6 +143,22 @@ $common-box-gap: 10px;
   .common-content {
     min-width: 600px;
     width: 100%;
+    .news-box {
+      h3 {
+        margin-top: $common-box-gap;
+        margin-bottom: 2px;
+        font-weight: 500;
+        position: relative;
+        &::after {
+          content: '新闻：';
+          color: transparent;
+          position: absolute;
+          left: 0;
+          top: -2.4px;
+          border-bottom: solid 4px rgba(197, 197, 197, 0.5);
+        }
+      }
+    }
   }
   .el-container {
     min-height: 100%;
@@ -134,15 +176,6 @@ $common-box-gap: 10px;
       float: right;
       padding: 0 1rem;
       z-index: 99999;
-    }
-    .news-body {
-      // white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-break: break-all;
-      display: -webkit-box;
-      -webkit-line-clamp: 5;
-      -webkit-box-orient: vertical;
     }
   }
   .el-aside {

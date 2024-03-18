@@ -51,6 +51,7 @@ const goAuth = (type: string) => {
   if (type === 'logout') {
     auth.clearAuth()
     router.replace('/')
+    window.location.reload()
     return
   }
   router.push(`/auth/${type}`)

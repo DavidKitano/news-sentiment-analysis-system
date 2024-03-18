@@ -88,7 +88,12 @@ const api = axios.create({
 let redirectTimer: any = null
 
 api.interceptors.request.use((config) => {
-  config.headers.Authorization = auth.isLogin ? auth.bearerToken : 'Basic bmV3c19jbGllbnQ6bmV3c19zZWNyZXQ='
+  console.log((config.url as string).indexOf('app-auth'))
+  if ((config.url as string).indexOf('app-auth') !== -1) {
+    config.headers.Authorization = 'Basic bmV3c19jbGllbnQ6bmV3c19zZWNyZXQ='
+  } else {
+    config.headers.Authorization = auth.isLogin ? auth.bearerToken : ''
+  }
 
   // 无需登录态的接口
   if (['/login'].indexOf(config.url as string) !== -1 || auth.isLogin || 1 === 1) {

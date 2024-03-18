@@ -73,7 +73,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 80,
+    port: 12345,
     proxy: {
       '/nsas-api': {
         target: 'http://120.25.103.178:800',
@@ -84,7 +84,7 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    port: 80,
+    port: 12345,
     proxy: {
       '/nsas-api': {
         target: 'http://120.25.103.178:800',

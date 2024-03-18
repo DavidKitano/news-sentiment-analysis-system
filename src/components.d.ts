@@ -38,6 +38,8 @@ declare module 'vue' {
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+    ElTag: typeof import('element-plus/es')['ElTag']
+    ElText: typeof import('element-plus/es')['ElText']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     HelloWorld: typeof import('./components/common/hello-world.vue')['default']
     IEpHelpFilled: typeof import('~icons/ep/help-filled')['default']
@@ -64,6 +66,7 @@ declare module 'vue' {
     WelcomeInfo: typeof import('./components/miscellaneous/welcome-info.vue')['default']
   }
   export interface ComponentCustomProperties {
+    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }
