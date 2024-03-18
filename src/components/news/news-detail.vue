@@ -23,17 +23,14 @@
 </template>
 <script lang="ts" setup>
 import { ArrowLeft } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router'
 
 defineProps<{
   id: string
 }>()
 
-const router = useRouter()
-
 const activeName = ref<'vi' | 'cn' | 'en'>('vi')
 
 const back = () => {
-  router.back()
+  window.location.href = '/news'
 }
 </script>

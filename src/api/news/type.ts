@@ -136,11 +136,11 @@ export interface ShowNewsDetails {
   /**
    * 新闻点赞数
    */
-  collect?: number
+  collect: number
   /**
    * 新闻收藏数
    */
-  commentCnt?: number
+  commentCnt: number
   /**
    * 新闻评论数据
    */
@@ -148,15 +148,15 @@ export interface ShowNewsDetails {
   /**
    * 是否收藏
    */
-  isCollect?: boolean
+  isCollect: boolean
   /**
    * 是否点赞
    */
-  isLike?: boolean
+  isLike: boolean
   /**
    * 点赞数量
    */
-  like?: number
+  like: number
   /**
    * 新闻数据
    */
@@ -304,4 +304,11 @@ export interface AppNewsShowNewsData {
    * 标题
    */
   title?: string
+}
+
+export interface AppNewsLikeRequest {
+  id: string
+}
+export interface AppNewsLikeResponse extends BaseResponse {
+  data: null
 }

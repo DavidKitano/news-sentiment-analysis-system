@@ -8,9 +8,12 @@
 import { fetchVersionFile } from './utils/versionCheck'
 import { useRoute } from 'vue-router'
 import { useAuth } from './stores/auth/auth'
+import { useUser } from './stores/user/user'
+import { getUserInfo } from './api/user'
 
 const route = useRoute()
 const auth = useAuth()
+const user = useUser()
 
 const isMenuShow = computed(() => {
   return !route.path.includes('auth')
@@ -68,8 +71,25 @@ const msg = ref({
   welcomeText: '你终于刷到我辣，现在你的身边多了一位健康的心理咨熊师'
 })
 
+const restoreUserInfo = async () => {
+  try {
+    const [hasError, data] = await getUserInfo({})
+    if (hasError) {
+      data?.msg && ElMessage.error(data.msg)
+      return
+    }
+    return data.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 onMounted(async () => {
   auth.restoreAuth()
+  if (auth.isLogin) {
+    const userInfo = await restoreUserInfo()
+    if (userInfo) user.setUserInfo(userInfo)
+  }
   msg.value.version = await fetchVersionFile()
 })
 </script>

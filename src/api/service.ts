@@ -3,8 +3,6 @@ import { useAuth } from '@/stores/auth/auth'
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { ElMessage, ElNotification } from 'element-plus'
 
-const auth = useAuth()
-
 export type Response<T> = Promise<[boolean, T]>
 export type BaseResponse = {
   code: number
@@ -88,6 +86,7 @@ const api = axios.create({
 let redirectTimer: any = null
 
 api.interceptors.request.use((config) => {
+  const auth = useAuth()
   if ((config.url as string).indexOf('app-auth') !== -1) {
     config.headers.Authorization = 'Basic bmV3c19jbGllbnQ6bmV3c19zZWNyZXQ='
   } else {
@@ -112,6 +111,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response): Promise<any> => {
+    const auth = useAuth()
     if (Object.prototype.toString.call(response.data) === '[object Blob]') {
       return Promise.resolve([false, response.data])
     }

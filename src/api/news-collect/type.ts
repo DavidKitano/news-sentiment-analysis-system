@@ -15,7 +15,7 @@ export interface AppNewsShowNewsCollectPostRequest {
   newsId: string
 }
 export interface AppNewsShowNewsCollectPostResponse extends BaseResponse {
-  data: { [key: string]: any }
+  data: null
 }
 
 // app-news-show/news/collect delete
@@ -23,5 +23,5 @@ export interface AppNewsShowNewsCollectDeleteRequest {
   newsId: string
 }
 export interface AppNewsShowNewsCollectDeleteResponse extends BaseResponse {
-  data: { [key: string]: any }
+  data: null
 }

@@ -15,8 +15,5 @@ export const login = (params: comp.AppAuthLoginRequest): Response<comp.AppAuthLo
   })
 }
 
-// export const logout = (params: comp.AppAuthLogoutRequest): Response<comp.AppAuthLogoutResponse> =>
-//   webapi.post('/app-auth/logout', params)
-
 export const register = (params: comp.AppAuthRegisterRequest): Response<comp.AppAuthRegisterResponse> =>
   webapi.post('/app-auth/auth/register', params)

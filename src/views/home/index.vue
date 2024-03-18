@@ -1,10 +1,10 @@
 <template>
-  <section v-infinite-scroll="loadNewsList" :infinite-scroll-disabled="loadDisabled">
+  <section v-infinite-scroll="loadNewsList" :infinite-scroll-disabled="loadDisabled" :infinite-scroll-distance="10">
     <welcome-info class="welcome-info" v-if="isWelcomeShow" v-model="isWelcomeShow" />
     <div class="common-layout" ref="containerRef">
       <el-container class="container">
         <el-aside class="left-aside" width="200px">
-          <nsas-box class="left-nav-bar" v-loading="hotNewsLoading">
+          <nsas-box v-if="!specificNewsId" class="left-nav-bar" v-loading="hotNewsLoading">
             <el-divider content-position="left"><h3>热点新闻</h3></el-divider>
             <el-timeline class="hot-news" v-if="hotNewsList.length > 0">
               <el-timeline-item
@@ -16,8 +16,10 @@
               >
                 <el-popover placement="right" :width="200" trigger="hover" :tabindex="12345">
                   <template #reference>
-                    <el-text class="news-title pointer">{{ hotNews.title }}</el-text></template
-                  >
+                    <el-text class="news-title pointer" @click="goToDetail(hotNews.newsId || '')">
+                      {{ hotNews.title }}
+                    </el-text>
+                  </template>
                   <template #default>
                     <el-image :src="hotNews.avatar" />
                   </template>
@@ -26,11 +28,30 @@
             </el-timeline>
             <el-empty v-else description="没有内容噢～" />
           </nsas-box>
+          <nsas-box v-else class="left-nav-bar">
+            <news-anchor />
+          </nsas-box>
         </el-aside>
 
         <el-container class="common-content">
           <el-header v-if="!specificNewsId">
-            <nsas-box class="header-nav-bar"> header </nsas-box>
+            <el-affix :offset="60">
+              <nsas-box class="header-nav-bar">
+                <el-input
+                  v-model="searchKeyword"
+                  size="large"
+                  placeholder="请输入关键词搜索..."
+                  class="input-with-select"
+                  clearable
+                >
+                  <template #append>
+                    <el-button @click="search" type="primary">
+                      <el-icon> <i-ep-search /></el-icon>
+                    </el-button>
+                  </template>
+                </el-input>
+              </nsas-box>
+            </el-affix>
           </el-header>
           <el-main>
             <section v-if="!specificNewsId" class="news-list-container" ref="mainRef">
@@ -136,6 +157,7 @@ const asideHeight = ref<string>('100%')
 const loading = ref<boolean>(false)
 const hotNewsLoading = ref<boolean>(false)
 const noMore = ref<boolean>(false)
+const searchKeyword = ref<string>('')
 const mainRef = ref<HTMLElement | null>(null)
 const pageInfo = ref({
   currentPage: 0,
@@ -145,9 +167,25 @@ const pageInfo = ref({
 const loadDisabled = computed(() => loading.value || noMore.value || newsList.value.length <= 0)
 const specificNewsId = computed(() => route.params.newsId as string)
 
-const goToDetail = (id: string) => {
+const goToDetail = async (id: string) => {
   isWelcomeShow.value = false
   router.push('/news/' + id)
+}
+
+const search = async () => {
+  pageInfo.value.currentPage = 0
+  loading.value = true
+  try {
+    const [hasError, data] = await getNewsList({ ...pageInfo.value, keyword: searchKeyword.value })
+    if (hasError) {
+      return data?.msg && ElMessage.error(data.msg)
+    }
+    newsList.value = data.data.content
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const loadHotNewsList = async () => {
@@ -181,27 +219,34 @@ const loadNewsList = async (isNew = true) => {
     console.error(error)
   } finally {
     loading.value = false
-    nextTick(() => {
-      const mainHeight = mainRef.value?.scrollHeight
-      if (mainHeight) {
-        asideHeight.value = `${mainHeight}px`
-      }
-    })
   }
 }
 
 onMounted(async () => {
-  if (specificNewsId.value) {
+  if (specificNewsId.value || auth.isLogin) {
     isWelcomeShow.value = false
   }
   await loadNewsList(false)
   await loadHotNewsList()
   console.log(route)
 })
+
+onUpdated(async () => {
+  if (specificNewsId.value || auth.isLogin) {
+    isWelcomeShow.value = false
+  }
+})
 </script>
 <style lang="scss" scoped>
 $common-bg-color: #f1f2f5;
 $common-box-gap: 10px;
+
+:deep(.el-input-group__append),
+:deep(.el-input-group__append button.el-button) {
+  background-color: #409eff;
+  color: white;
+  border-color: #409eff;
+}
 
 .welcome-info {
   position: absolute;
@@ -236,9 +281,6 @@ $common-box-gap: 10px;
   .common-content {
     min-width: 600px;
     width: 100%;
-    .header-nav-bar {
-      position: sticky;
-    }
     .loading-box {
       text-align: center;
       display: flex;
@@ -253,14 +295,6 @@ $common-box-gap: 10px;
         margin-bottom: 2px;
         font-weight: 500;
         position: relative;
-        &::after {
-          content: '新闻：';
-          color: transparent;
-          position: absolute;
-          left: 170px;
-          top: -2.4px;
-          border-bottom: solid 4px rgba(197, 197, 197, 0.5);
-        }
       }
     }
   }
@@ -277,8 +311,8 @@ $common-box-gap: 10px;
     gap: $common-box-gap;
     padding-top: $common-box-gap;
     .news-avatar {
-      float: left;
-      padding: 0 10px 0 0;
+      float: right;
+      padding: 0 0 0 10px;
       z-index: 10;
       height: 108px;
       overflow: hidden;
@@ -302,13 +336,12 @@ $common-box-gap: 10px;
     }
   }
   .right-aside {
-    overflow: visible;
     padding-right: 5rem;
     height: 100%;
+    position: sticky;
+    top: calc(var(--el-menu-horizontal-height) + 10px);
     .right-content {
       padding-top: $common-box-gap;
-      position: sticky;
-      top: var(--el-menu-horizontal-height);
     }
   }
 }

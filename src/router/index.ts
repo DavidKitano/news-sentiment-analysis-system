@@ -9,8 +9,7 @@ const router = createRouter({
       redirect: '/news'
     },
     {
-      path: '/news',
-      alias: ['/home', '/home/:newsId', '/index', '/index/:newsId', '/news/:newsId'],
+      path: '/news/:newsId?',
       name: 'home',
       component: () => import('../views/home/index.vue')
     },

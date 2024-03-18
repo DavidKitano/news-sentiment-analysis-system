@@ -2,25 +2,31 @@
   <div v-loading="loading">
     <el-empty v-if="!newsInfo" description="没有内容噢～" />
     <div v-else>
-      <h1>
+      <h1 id="title">
         {{ title }}
       </h1>
       <el-divider />
       <section class="news-tag">
         <h5>作者：</h5>
-        <el-tag type="info">{{ newsContent?.author || '匿名' }}</el-tag>
+        <el-tooltip class="box-item" effect="dark" :content="newsContent?.author || '匿名'" placement="top">
+          <el-tag type="info">{{ newsContent?.author || '匿名' }}</el-tag>
+        </el-tooltip>
         <el-divider direction="vertical" />
         <h5>类型：</h5>
-        <el-tag type="info">{{ newsContent?.type || '未分类' }}</el-tag>
+        <el-tooltip class="box-item" effect="dark" :content="newsContent?.type || '未分类'" placement="top">
+          <el-tag type="info">{{ newsContent?.type || '未分类' }}</el-tag>
+        </el-tooltip>
         <el-divider direction="vertical" />
         <h5>日期：</h5>
-        <el-tag type="info">{{ newsContent?.date || '未指明' }}</el-tag>
+        <el-tooltip class="box-item" effect="dark" :content="newsContent?.date || '未指明'" placement="top">
+          <el-tag type="info">{{ newsContent?.date || '未指明' }}</el-tag>
+        </el-tooltip>
         <el-divider direction="vertical" />
         <div class="tag-group">
           <h3>
-            <el-icon>
-              <i-ep-star v-if="!newsInfo?.isCollect" />
-              <i-ep-star-filled style="color: rgb(255, 100, 100)" v-else />
+            <el-icon class="pointer">
+              <i-ep-star v-if="!newsInfo?.isCollect" @click="handleCollect(false)" />
+              <i-ep-star-filled style="color: rgb(255, 100, 100)" v-else @click="handleCollect(true)" />
             </el-icon>
           </h3>
           <el-text>{{ newsInfo?.collect }}</el-text>
@@ -28,9 +34,9 @@
         <el-divider direction="vertical" />
         <div class="tag-group">
           <h3>
-            <el-icon>
-              <nsas-thumb-up v-if="!newsInfo?.isLike" />
-              <nsas-thumb-up-filled style="color: rgb(255, 100, 100)" v-else />
+            <el-icon class="pointer">
+              <nsas-thumb-up v-if="!newsInfo?.isLike" @click="handleLike(false)" />
+              <nsas-thumb-up-filled style="color: rgb(255, 100, 100)" v-else @click="handleLike(true)" />
             </el-icon>
           </h3>
           <el-text>{{ newsInfo?.like }}</el-text>
@@ -38,24 +44,28 @@
         <el-divider direction="vertical" />
         <div class="tag-group">
           <h3>
-            <el-icon><i-ep-chat-line-square /></el-icon>
+            <el-icon class="pointer"><i-ep-chat-line-square /></el-icon>
           </h3>
           <el-text>{{ newsInfo?.commentCnt }}</el-text>
         </div>
       </section>
       <section class="news-tag">
-        <h5>来源：</h5>
-        <el-tag type="info">{{ newsContent?.url || '未指明' }}</el-tag>
+        <h5 style="width: max-content">来源：</h5>
+        <el-tooltip class="box-item" effect="dark" :content="newsContent?.url || '未指明'" placement="top">
+          <el-tag type="info">
+            {{ newsContent?.url || '未指明' }}
+          </el-tag>
+        </el-tooltip>
       </section>
       <el-divider />
       <section class="img-container">
         <el-image :src="newsContent?.avatar" class="news-cover" />
       </section>
-      <el-divider class="news-title" content-position="left"><h3>摘要</h3></el-divider>
-      <el-text tag="p" class="summary">
-        {{ newsSummary }}
+      <el-divider id="summary" class="news-title" content-position="left"><h3>摘要</h3></el-divider>
+      <el-text tag="p" class="summary" v-for="paragraph of newsSummary" :key="paragraph">
+        {{ paragraph }}
       </el-text>
-      <el-divider class="news-title" content-position="left"><h3>正文</h3></el-divider>
+      <el-divider id="body" class="news-title" content-position="left"><h3>正文</h3></el-divider>
       <div class="carousel-images" v-if="newsInfo?.newsImg?.length">
         <el-carousel height="200px" motion-blur>
           <el-carousel-item v-for="imgItem in newsInfo?.newsImg" :key="imgItem.url">
@@ -63,11 +73,11 @@
           </el-carousel-item>
         </el-carousel>
       </div>
-      <el-text tag="p" class="body">
-        {{ newsBody }}
+      <el-text tag="p" class="body" v-for="paragraph of newsBody" :key="paragraph">
+        {{ paragraph }}
       </el-text>
-      <template v-for="item in newsInfo?.newsExt" :key="item">
-        <div v-if="!isDataEmpty(item.data)">
+      <template v-for="(item, idx) in newsInfo?.newsExt" :key="item">
+        <div :id="idx + ''" v-if="!isDataEmpty(item.data)">
           <el-divider class="news-title" content-position="left">
             <h3>{{ item.tag }}</h3>
           </el-divider>
@@ -75,7 +85,11 @@
             <el-text>{{ item.data }}</el-text>
           </template>
           <template v-else-if="item.type === DataType.LIST">
-            <el-tag class="data-tag-item" v-for="tagItem of item.data" :key="tagItem + ''"> {{ tagItem }} </el-tag>
+            <el-collapse v-model="activeCollapseNameList">
+              <el-collapse-item :title="`点击展开${item.tag}`" :name="item.tag">
+                <el-tag class="data-tag-item" v-for="tagItem of item.data" :key="tagItem + ''"> {{ tagItem }} </el-tag>
+              </el-collapse-item>
+            </el-collapse>
           </template>
           <template v-else-if="item.type === DataType.IMAGE">
             <el-image :src="'' + item.data" />
@@ -86,24 +100,26 @@
           <template v-else-if="item.type === DataType.HISTOGRAM"></template>
           <template v-else-if="item.type === DataType.PIE"></template>
           <template v-else-if="item.type === DataType.TAG">
-            <el-tag class="data-tag-item"> {{ item.data }} </el-tag>
+            <el-tag size="large" class="data-tag-item"> {{ item.data }} </el-tag>
           </template>
           <template v-else>
             {{ item.data }}
           </template>
         </div>
       </template>
-      <pre>
-      {{ newsInfo }}
-    </pre
-      >
+      <el-divider id="comment" class="news-title" content-position="left">
+        <h3>评论区</h3>
+      </el-divider>
+      {{ newsInfo?.commentList }}
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { getNewsDetail } from '@/api/news'
+import { cancelLikeNews, getNewsDetail, likeNews } from '@/api/news'
+import { deleteCollect, postCollect } from '@/api/news-collect'
 import type { NewsMultiLanguageDo, ShowNewsDetails } from '@/api/news/type'
 import { NsasThumbUp, NsasThumbUpFilled } from '@/assets/svg'
+import { useCatalogue } from '@/stores/news/catalogue'
 
 enum DataType {
   TEXT,
@@ -122,7 +138,9 @@ const props = defineProps<{
   id: string | number
 }>()
 
+const catalogue = useCatalogue()
 const loading = ref<boolean>(false)
+const activeCollapseNameList = ref<string[]>([])
 
 const title = computed(() => {
   switch (props.lang) {
@@ -136,30 +154,28 @@ const title = computed(() => {
       return newsContent.value?.titleZh
   }
 })
-
 const newsBody = computed(() => {
   switch (props.lang) {
     case 'cn':
-      return newsContent.value?.bodyZh
+      return newsContent.value?.bodyZh?.split('\n')
     case 'en':
-      return newsContent.value?.bodyEn
+      return newsContent.value?.bodyEn?.split('\n')
     case 'vi':
-      return newsContent.value?.bodyVi
+      return newsContent.value?.bodyVi?.split('\n')
     default:
-      return newsContent.value?.bodyVi
+      return newsContent.value?.bodyVi?.split('\n')
   }
 })
-
 const newsSummary = computed(() => {
   switch (props.lang) {
     case 'cn':
-      return newsContent.value?.summaryZh
+      return newsContent.value?.summaryZh?.split('\n')
     case 'en':
-      return newsContent.value?.summaryEn
+      return newsContent.value?.summaryEn?.split('\n')
     case 'vi':
-      return newsContent.value?.summaryVi
+      return newsContent.value?.summaryVi?.split('\n')
     default:
-      return newsContent.value?.summaryVi
+      return newsContent.value?.summaryVi?.split('\n')
   }
 })
 
@@ -182,6 +198,56 @@ const loadNewsDetail = async () => {
     loading.value = false
   }
 }
+const handleCollect = async (isCancel: boolean) => {
+  try {
+    loading.value = true
+    let hasError = false
+    let data = null
+    if (isCancel) {
+      ;[hasError, data] = await deleteCollect({ newsId: props.id as string })
+    } else {
+      ;[hasError, data] = await postCollect({ newsId: props.id as string })
+    }
+    if (hasError) {
+      return data?.msg && ElMessage.error(data.msg)
+    }
+    if (newsInfo.value) {
+      newsInfo.value.isCollect = !newsInfo.value.isCollect
+      isCancel ? newsInfo.value.collect-- : newsInfo.value.collect++
+    }
+    ElMessage.success(isCancel ? '取消收藏成功' : '收藏成功')
+  } catch (e) {
+    ElMessage.error('操作失败')
+    console.error(e)
+  } finally {
+    loading.value = false
+  }
+}
+const handleLike = async (isCancel: boolean) => {
+  try {
+    loading.value = true
+    let hasError = false
+    let data = null
+    if (isCancel) {
+      ;[hasError, data] = await cancelLikeNews({ id: props.id as string })
+    } else {
+      ;[hasError, data] = await likeNews({ id: props.id as string })
+    }
+    if (hasError) {
+      return data?.msg && ElMessage.error(data.msg)
+    }
+    if (newsInfo.value) {
+      newsInfo.value.isLike = !newsInfo.value.isLike
+      isCancel ? newsInfo.value.like-- : newsInfo.value.like++
+    }
+    ElMessage.success(isCancel ? '取消点赞成功' : '点赞成功')
+  } catch (e) {
+    ElMessage.error('操作失败')
+    console.error(e)
+  } finally {
+    loading.value = false
+  }
+}
 
 const isDataEmpty = (data?: { [key: string]: any } | Array<any> | string) => {
   if (!data || data === 'http://120.25.103.178:5136') {
@@ -195,6 +261,25 @@ const isDataEmpty = (data?: { [key: string]: any } | Array<any> | string) => {
 
 onMounted(async () => {
   await loadNewsDetail()
+  const availKey = []
+  for (const key in newsInfo.value?.newsExt) {
+    if (
+      Object.prototype.hasOwnProperty.call(newsInfo.value?.newsExt, key) &&
+      newsInfo.value?.newsExt[key].data &&
+      !isDataEmpty(newsInfo.value?.newsExt[key].data)
+    ) {
+      if (!newsInfo.value?.newsExt[key]?.tag) continue
+      availKey.push({ label: newsInfo.value.newsExt[key].tag!, anchor: key })
+    }
+  }
+  console.log(availKey)
+  catalogue.setCatalogue([
+    { label: '标题', anchor: 'title' },
+    { label: '摘要', anchor: 'summary' },
+    { label: '正文', anchor: 'body' },
+    ...availKey,
+    { label: '评论区', anchor: 'comment' }
+  ])
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
@@ -238,5 +323,17 @@ h3 {
   line-height: 200px;
   margin: 0;
   text-align: center;
+}
+.el-tag {
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:deep(.el-tag__content) {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <section id="menu">
-    <el-menu :default-active="defaultActive" class="el-menu" mode="horizontal">
+    <el-menu :ellipsis="false" :default-active="defaultActive" class="el-menu" mode="horizontal">
       <img style="height: 84%" class="logo" src="/logo.png" :draggable="false" />
       <el-menu-item index="news" @click="jumpTo('news')">
         <el-icon><i-ep-home-filled /></el-icon>
@@ -19,7 +19,7 @@
         人物图谱
       </el-menu-item>
       <div class="flex-grow" />
-      <el-button-group v-if="!auth.isLogin" class="function-btn">
+      <el-button-group v-if="!auth.isLogin" class="function-btn ml-4">
         <el-button type="primary" @click="goAuth('login')">登录</el-button>
         <el-button type="primary" text @click="goAuth('register')"> 注册 </el-button>
       </el-button-group>
