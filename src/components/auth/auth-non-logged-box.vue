@@ -8,11 +8,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 const goAuth = (type: string) => {
-  router.push(`/auth/${type}`)
+  window.location.href = `/auth/${type}`
 }
 </script>
 <style lang="scss" scoped>

@@ -67,7 +67,7 @@
       </el-text>
       <el-divider id="body" class="news-title" content-position="left"><h3>正文</h3></el-divider>
       <div class="carousel-images" v-if="newsInfo?.newsImg?.length">
-        <el-carousel height="200px" motion-blur>
+        <el-carousel height="200px">
           <el-carousel-item v-for="imgItem in newsInfo?.newsImg" :key="imgItem.url">
             <el-image :src="imgItem.url" fit="contain" style="width: 100%; height: 100%"></el-image>
           </el-carousel-item>

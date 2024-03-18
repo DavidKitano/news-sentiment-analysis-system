@@ -4,10 +4,34 @@ import type { BaseResponse } from '../service'
 export interface AppNewsShowNewsCollectRequest {
   currentPage: number
   pageSize: number
-  keyword: string
 }
 export interface AppNewsShowNewsCollectResponse extends BaseResponse {
-  data: { [key: string]: any }
+  data: PageQueryResultOfCollectNewsVO
+}
+export interface PageQueryResultOfCollectNewsVO {
+  currentPage?: number
+  data?: CollectNewsVO[]
+  pages?: number
+  pageSize?: number
+  total?: number
+}
+export interface CollectNewsVO {
+  /**
+   * 新闻封面
+   */
+  avatar?: string
+  /**
+   * 新闻id
+   */
+  newsId?: string
+  /**
+   * 新闻作者
+   */
+  summary?: string
+  /**
+   * 新闻标题
+   */
+  title?: string
 }
 
 // app-news-show/news/collect post

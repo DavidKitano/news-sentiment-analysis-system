@@ -126,7 +126,9 @@
         <el-aside class="right-aside" width="300px" :style="{ height: asideHeight }">
           <nsas-box class="right-nav-bar">
             <auth-non-logged-box v-if="!auth.isLogin" />
-            <section v-else>aa</section>
+            <section v-else>
+              <user-info />
+            </section>
           </nsas-box>
           <nsas-box class="right-content">
             <auth-non-logged-box v-if="!auth.isLogin" />

@@ -58,7 +58,7 @@ const goAuth = (type: string) => {
 }
 
 const jumpTo = (path: string) => {
-  router.push(`/${path}`)
+  window.location.href = `/${path}`
 }
 </script>
 <style lang="scss" scoped>

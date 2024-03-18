@@ -14,20 +14,18 @@
 </template>
 <script setup lang="ts">
 import { useAuth } from '@/stores/auth/auth'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const auth = useAuth()
 
 const visible = ref(true)
 
 const gotoHomePage = () => {
-  router.push('/')
+  window.location.href = '/news'
 }
 
 onBeforeMount(() => {
   if (auth.isLogin) {
-    router.push('/')
+    window.location.href = '/news'
   }
 })
 </script>
