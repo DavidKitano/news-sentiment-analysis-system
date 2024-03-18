@@ -307,6 +307,9 @@ $common-box-gap: 10px;
     --el-header-height: max-content;
     color: #fff;
   }
+  .el-main {
+    padding-top: 0;
+  }
   .news-list {
     display: flex;
     flex-direction: column;
