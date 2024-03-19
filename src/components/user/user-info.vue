@@ -1,6 +1,6 @@
 <template>
   <div class="avatar-box">
-    <el-avatar :size="80" :src="user.avatar">
+    <el-avatar :size="80" :src="user.avatar" alt="用户头像">
       <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" alt="加载失败" />
     </el-avatar>
   </div>
@@ -53,7 +53,7 @@
         {{ user.gender }}
       </el-descriptions-item>
       <template #extra>
-        <el-button type="primary" size="small" class="cell-item">
+        <el-button type="primary" size="small" class="cell-item" @click="showDialog()">
           编辑&nbsp;<el-icon> <i-ep-edit /> </el-icon>
         </el-button>
       </template>
@@ -98,6 +98,30 @@
       </el-scrollbar>
     </template>
   </el-drawer>
+  <el-dialog
+    v-model="dialogVisible"
+    :visible="dialogVisible"
+    width="30%"
+    destroy-on-close
+    center
+    append-to-body
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
+    <template #header>
+      <h2 style="color: #7d7d7d">
+        <strong>编辑用户信息</strong>
+      </h2>
+    </template>
+    <user-modify
+      :id="String(user.userId)"
+      :gender="user.gender"
+      :account="user.account"
+      :email="user.email"
+      :username="user.username"
+      :avatar="user.avatar"
+    />
+  </el-dialog>
 </template>
 <script setup lang="ts">
 import { getCollect } from '@/api/news-collect'
@@ -107,6 +131,7 @@ import { useUser } from '@/stores/user/user'
 const user = useUser()
 
 const showDrawer = ref<boolean>(false)
+const dialogVisible = ref<boolean>(false)
 const loading = ref<boolean>(false)
 const collectedNewsList = ref<newsData[]>([])
 const pageInfo = ref({
@@ -131,6 +156,11 @@ const showDrawerFunc = async () => {
   showDrawer.value = true
   await loadCollectedNewsList()
 }
+const showDialog = () => {
+  console.log('aa')
+  dialogVisible.value = true
+}
+
 const loadCollectedNewsList = async () => {
   loading.value = true
   try {

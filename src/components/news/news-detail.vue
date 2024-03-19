@@ -6,17 +6,15 @@
         <span class="text-large font-600 mr-3"> 新闻详情 </span>
       </template>
       <div class="mt-4 text-sm font-bold">
-        <el-tabs v-model="activeName" type="border-card" class="demo-tabs">
-          <el-tab-pane label="Tiếng Việt" name="vi">
-            <news-detail-content lang="vi" :id="id" />
-          </el-tab-pane>
-          <el-tab-pane label="中文" name="cn">
-            <news-detail-content lang="cn" :id="id" />
-          </el-tab-pane>
-          <el-tab-pane label="English" name="en">
-            <news-detail-content lang="en" :id="id" />
-          </el-tab-pane>
-        </el-tabs>
+        <news-detail-content :lang="activeName" :id="id">
+          <template #titleTab>
+            <el-tabs v-model="activeName" tabPosition="left">
+              <el-tab-pane label="Tiếng Việt" name="vi" />
+              <el-tab-pane label="中文" name="cn" />
+              <el-tab-pane label="English" name="en" />
+            </el-tabs>
+          </template>
+        </news-detail-content>
       </div>
     </el-page-header>
   </nsas-box>

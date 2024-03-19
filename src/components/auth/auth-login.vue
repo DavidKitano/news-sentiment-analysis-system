@@ -22,6 +22,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { login as loginApi } from '@/api/auth'
 import { useAuth } from '@/stores/auth/auth'
+import { getUserInfo } from '@/api/user'
+import { useUser } from '@/stores/user/user'
 
 type RuleForm = {
   username: string
@@ -31,6 +33,7 @@ type RuleForm = {
 
 const router = useRouter()
 const auth = useAuth()
+const user = useUser()
 
 const loading = ref<boolean>(false)
 const ruleFormRef = ref<FormInstance>()
@@ -53,6 +56,20 @@ const rules = reactive<FormRules<RuleForm>>({
   username: [{ validator: validateNonNull, trigger: ['blur', 'change'] }]
 })
 
+const restoreUserInfo = async () => {
+  try {
+    const [hasError, data] = await getUserInfo({})
+    if (hasError) {
+      data?.msg && ElMessage.error(data.msg)
+      return
+    }
+    return data.data
+  } catch (error) {
+    ElMessage.error('获取用户信息失败')
+    console.error(error)
+  }
+}
+
 const login = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
@@ -67,6 +84,8 @@ const login = async (formEl: FormInstance | undefined) => {
     if (token) {
       ElMessage.success('登录成功')
       auth.setAuth(token, data || {})
+      const userInfo = await restoreUserInfo()
+      if (userInfo) user.setUserInfo(userInfo)
       router.replace('/')
     } else {
       throw new Error('登录失败，请稍后重试')

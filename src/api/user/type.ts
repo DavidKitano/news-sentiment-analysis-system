@@ -106,3 +106,35 @@ export interface Role {
    */
   parentId?: number
 }
+
+export interface modUserRequest {
+  /**
+   * 邮箱
+   */
+  email?: string
+  /**
+   * 用户拓展信息
+   */
+  ext?: UserExtDTO
+  /**
+   * 用户id
+   */
+  id?: number
+  /**
+   * 用户名
+   */
+  username?: string
+}
+export interface UserExtDTO {
+  /**
+   * 头像
+   */
+  avatar?: string
+  /**
+   * 性别
+   */
+  gender?: string
+}
+export interface modUserResponse extends BaseResponse {
+  data: null
+}

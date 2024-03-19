@@ -11,6 +11,7 @@ declare module 'vue' {
     AuthLogin: typeof import('./components/auth/auth-login.vue')['default']
     AuthNonLoggedBox: typeof import('./components/auth/auth-non-logged-box.vue')['default']
     AuthRegister: typeof import('./components/auth/auth-register.vue')['default']
+    AuthRegisterTable: typeof import('./components/auth/auth-register-table.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAnchor: typeof import('element-plus/es')['ElAnchor']
     ElAnchorLink: typeof import('element-plus/es')['ElAnchorLink']
@@ -79,6 +80,7 @@ declare module 'vue' {
     StarLink: typeof import('./components/miscellaneous/star-link.vue')['default']
     TimeCountdown: typeof import('./components/miscellaneous/time-countdown.vue')['default']
     UserInfo: typeof import('./components/user/user-info.vue')['default']
+    UserModify: typeof import('./components/user/user-modify.vue')['default']
     WelcomeInfo: typeof import('./components/miscellaneous/welcome-info.vue')['default']
   }
   export interface ComponentCustomProperties {

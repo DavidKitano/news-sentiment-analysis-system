@@ -130,10 +130,6 @@
               <user-info />
             </section>
           </nsas-box>
-          <nsas-box class="right-content">
-            <auth-non-logged-box v-if="!auth.isLogin" />
-            <section v-else>aa</section>
-          </nsas-box>
         </el-aside>
       </el-container>
     </div>

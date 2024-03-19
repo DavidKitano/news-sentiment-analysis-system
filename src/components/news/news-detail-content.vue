@@ -2,9 +2,14 @@
   <div v-loading="loading">
     <el-empty v-if="!newsInfo" description="没有内容噢～" />
     <div v-else>
-      <h1 id="title">
-        {{ title }}
-      </h1>
+      <div id="title">
+        <slot name="titleTab" />
+        <el-text>
+          <h1>
+            {{ title }}
+          </h1>
+        </el-text>
+      </div>
       <el-divider />
       <section class="news-tag">
         <h5>作者：</h5>
@@ -81,30 +86,30 @@
           <el-divider class="news-title" content-position="left">
             <h3>{{ item.tag }}</h3>
           </el-divider>
-          <template v-if="item.type === DataType.TEXT">
-            <el-text>{{ item.data }}</el-text>
-          </template>
-          <template v-else-if="item.type === DataType.LIST">
-            <el-collapse v-model="activeCollapseNameList">
-              <el-collapse-item :title="`点击展开${item.tag}`" :name="item.tag">
+          <el-collapse v-model="activeCollapseNameList">
+            <el-collapse-item :title="`点击展开${item.tag}`" :name="item.tag">
+              <template v-if="item.type === DataType.TEXT">
+                <el-text>{{ item.data }}</el-text>
+              </template>
+              <template v-else-if="item.type === DataType.LIST">
                 <el-tag class="data-tag-item" v-for="tagItem of item.data" :key="tagItem + ''"> {{ tagItem }} </el-tag>
-              </el-collapse-item>
-            </el-collapse>
-          </template>
-          <template v-else-if="item.type === DataType.IMAGE">
-            <el-image :src="'' + item.data" />
-          </template>
-          <template v-else-if="item.type === DataType.AUDIO"></template>
-          <template v-else-if="item.type === DataType.VIDEO"></template>
-          <template v-else-if="item.type === DataType.LINE_CHART"></template>
-          <template v-else-if="item.type === DataType.HISTOGRAM"></template>
-          <template v-else-if="item.type === DataType.PIE"></template>
-          <template v-else-if="item.type === DataType.TAG">
-            <el-tag size="large" class="data-tag-item"> {{ item.data }} </el-tag>
-          </template>
-          <template v-else>
-            {{ item.data }}
-          </template>
+              </template>
+              <template v-else-if="item.type === DataType.IMAGE">
+                <el-image :src="'' + item.data" />
+              </template>
+              <template v-else-if="item.type === DataType.AUDIO"></template>
+              <template v-else-if="item.type === DataType.VIDEO"></template>
+              <template v-else-if="item.type === DataType.LINE_CHART"></template>
+              <template v-else-if="item.type === DataType.HISTOGRAM"></template>
+              <template v-else-if="item.type === DataType.PIE"></template>
+              <template v-else-if="item.type === DataType.TAG">
+                <el-tag size="large" class="data-tag-item"> {{ item.data }} </el-tag>
+              </template>
+              <template v-else>
+                {{ item.data }}
+              </template>
+            </el-collapse-item>
+          </el-collapse>
         </div>
       </template>
       <el-divider id="comment" class="news-title" content-position="left">
@@ -120,6 +125,7 @@ import { deleteCollect, postCollect } from '@/api/news-collect'
 import type { NewsMultiLanguageDo, ShowNewsDetails } from '@/api/news/type'
 import { NsasThumbUp, NsasThumbUpFilled } from '@/assets/svg'
 import { useCatalogue } from '@/stores/news/catalogue'
+import { isDataEmpty } from '@/utils/common'
 
 enum DataType {
   TEXT,
@@ -249,16 +255,6 @@ const handleLike = async (isCancel: boolean) => {
   }
 }
 
-const isDataEmpty = (data?: { [key: string]: any } | Array<any> | string) => {
-  if (!data || data === 'http://120.25.103.178:5136') {
-    return true
-  }
-  if (Array.isArray(data)) {
-    return data.length === 0
-  }
-  return Object.keys(data).length === 0
-}
-
 onMounted(async () => {
   await loadNewsDetail()
   const availKey = []
@@ -292,6 +288,27 @@ h3 {
   padding: 0;
   font-size: 1.2rem;
   font-weight: 500;
+}
+
+#title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 150px;
+  :deep(.el-tabs) {
+    overflow: unset;
+  }
+  h1 {
+    width: 100%;
+    flex: 1;
+    white-space: wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  & + .el-divider {
+    margin-top: 0;
+  }
 }
 
 .news-title {
