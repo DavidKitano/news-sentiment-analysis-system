@@ -56,6 +56,8 @@ backtop
 
 qiankun
 
+echarts
+
 ## 缩写词
 btn # button
 

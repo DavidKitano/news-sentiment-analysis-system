@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { isURL, isDataEmpty } from '../common'
+import { isURL, isDataEmpty, objectToArrayWithValue, separateArray } from '../common'
 
 describe('isURL function', () => {
   test('should return true for valid URLs', () => {
@@ -37,5 +37,90 @@ describe('isDataEmpty function', () => {
     expect(isDataEmpty('http://www.baidu.com')).toBe(false)
     expect(isDataEmpty(['item'])).toBe(false)
     expect(isDataEmpty({ key: 'value' })).toBe(false)
+  })
+})
+
+describe('objectToArrayWithValue function', () => {
+  test('should convert object to array', () => {
+    expect(objectToArrayWithValue({ a: 1, b: 2 })).toEqual([
+      ['a', 1],
+      ['b', 2]
+    ])
+    expect(objectToArrayWithValue({})).toEqual([])
+    expect(objectToArrayWithValue({ a: 1 })).toEqual([['a', 1]])
+    expect(objectToArrayWithValue({ a: 1, b: 2, c: 3 })).toEqual([
+      ['a', 1],
+      ['b', 2],
+      ['c', 3]
+    ])
+    expect(objectToArrayWithValue({ a: 1, b: 2, c: 3, d: 4 })).toEqual([
+      ['a', 1],
+      ['b', 2],
+      ['c', 3],
+      ['d', 4]
+    ])
+    expect(objectToArrayWithValue({ 1: 2, 3: 4, 5: 6 })).toEqual([
+      ['1', 2],
+      ['3', 4],
+      ['5', 6]
+    ])
+  })
+})
+
+describe('separateArray function', () => {
+  test('should separate array', () => {
+    expect(
+      separateArray([
+        ['a', 1],
+        ['b', 2]
+      ])
+    ).toEqual([
+      ['a', 'b'],
+      [1, 2]
+    ])
+    expect(separateArray([['a', 1]])).toEqual([['a'], [1]])
+    expect(
+      separateArray([
+        ['a', 1],
+        ['b', 2],
+        ['c', 3]
+      ])
+    ).toEqual([
+      ['a', 'b', 'c'],
+      [1, 2, 3]
+    ])
+    expect(
+      separateArray([
+        ['a', 1],
+        ['b', 2],
+        ['c', 3],
+        ['d', 4]
+      ])
+    ).toEqual([
+      ['a', 'b', 'c', 'd'],
+      [1, 2, 3, 4]
+    ])
+    expect(
+      separateArray([
+        ['1', 2],
+        ['3', 4],
+        ['5', 6]
+      ])
+    ).toEqual([
+      ['1', '3', '5'],
+      [2, 4, 6]
+    ])
+    expect(separateArray([])).toEqual([[], []])
+    expect(
+      separateArray([
+        ['a', [1, 2, 3]],
+        ['b', void 0],
+        ['c', { n: 44 }],
+        ['d', null]
+      ])
+    ).toEqual([
+      ['a', 'b', 'c', 'd'],
+      [[1, 2, 3], void 0, { n: 44 }, null]
+    ])
   })
 })

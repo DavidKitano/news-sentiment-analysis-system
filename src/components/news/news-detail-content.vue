@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <div v-loading="loading" ref="detailContentRef">
     <el-empty v-if="!newsInfo" description="没有内容噢～" />
     <div v-else>
       <div id="title">
@@ -97,11 +97,27 @@
               <template v-else-if="item.type === DataType.IMAGE">
                 <el-image :src="'' + item.data" />
               </template>
-              <template v-else-if="item.type === DataType.AUDIO"></template>
-              <template v-else-if="item.type === DataType.VIDEO"></template>
-              <template v-else-if="item.type === DataType.LINE_CHART"></template>
-              <template v-else-if="item.type === DataType.HISTOGRAM"></template>
-              <template v-else-if="item.type === DataType.PIE"></template>
+              <template v-else-if="item.type === DataType.AUDIO">
+                <audio controls>
+                  <source :src="'' + item.data" />
+                  您的浏览器不支持 audio 元素。
+                </audio>
+              </template>
+              <template v-else-if="item.type === DataType.VIDEO">
+                <video controls>
+                  <source :src="'' + item.data" />
+                  您的浏览器不支持 video 元素。
+                </video>
+              </template>
+              <template v-else-if="item.type === DataType.LINE_CHART">
+                <!-- TODO: 暂无需求，预留位 -->
+              </template>
+              <template v-else-if="item.type === DataType.HISTOGRAM">
+                <chart-histogram :datums="item.data as generalObject" />
+              </template>
+              <template v-else-if="item.type === DataType.PIE">
+                <!-- TODO: 暂无需求，预留位 -->
+              </template>
               <template v-else-if="item.type === DataType.TAG">
                 <el-tag size="large" class="data-tag-item"> {{ item.data }} </el-tag>
               </template>
@@ -116,6 +132,7 @@
         <h3>评论区</h3>
       </el-divider>
       {{ newsInfo?.commentList }}
+      <pre>{{ newsInfo }}</pre>
     </div>
   </div>
 </template>
@@ -126,6 +143,9 @@ import type { NewsMultiLanguageDo, ShowNewsDetails } from '@/api/news/type'
 import { NsasThumbUp, NsasThumbUpFilled } from '@/assets/svg'
 import { useCatalogue } from '@/stores/news/catalogue'
 import { isDataEmpty } from '@/utils/common'
+type generalObject = {
+  [key: string]: any
+}
 
 enum DataType {
   TEXT,
@@ -147,6 +167,7 @@ const props = defineProps<{
 const catalogue = useCatalogue()
 const loading = ref<boolean>(false)
 const activeCollapseNameList = ref<string[]>([])
+const detailContentRef = ref<HTMLElement>()
 
 const title = computed(() => {
   switch (props.lang) {
