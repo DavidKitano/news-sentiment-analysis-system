@@ -1,7 +1,11 @@
 <template>
   <div class="avatar-box">
-    <el-avatar :size="80" :src="user.avatar" alt="用户头像">
-      <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" alt="加载失败" />
+    <el-avatar :size="80" :src="user.avatar" alt="用户头像" :draggable="false">
+      <img
+        src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+        alt="加载失败"
+        :draggable="false"
+      />
     </el-avatar>
   </div>
   <div class="info-box">

@@ -49,7 +49,11 @@
         <el-divider direction="vertical" />
         <div class="tag-group">
           <h3>
-            <el-icon class="pointer"><i-ep-chat-line-square /></el-icon>
+            <el-icon class="pointer">
+              <a href="#comment">
+                <i-ep-chat-line-square />
+              </a>
+            </el-icon>
           </h3>
           <el-text>{{ newsInfo?.commentCnt }}</el-text>
         </div>
@@ -128,11 +132,6 @@
           </el-collapse>
         </div>
       </template>
-      <el-divider id="comment" class="news-title" content-position="left">
-        <h3>评论区</h3>
-      </el-divider>
-      {{ newsInfo?.commentList }}
-      <pre>{{ newsInfo }}</pre>
     </div>
   </div>
 </template>
@@ -142,6 +141,7 @@ import { deleteCollect, postCollect } from '@/api/news-collect'
 import type { NewsMultiLanguageDo, ShowNewsDetails } from '@/api/news/type'
 import { NsasThumbUp, NsasThumbUpFilled } from '@/assets/svg'
 import { useCatalogue } from '@/stores/news/catalogue'
+import { useComments } from '@/stores/news/comments'
 import { isDataEmpty } from '@/utils/common'
 type generalObject = {
   [key: string]: any
@@ -164,6 +164,7 @@ const props = defineProps<{
   id: string | number
 }>()
 
+const comment = useComments()
 const catalogue = useCatalogue()
 const loading = ref<boolean>(false)
 const activeCollapseNameList = ref<string[]>([])
@@ -278,6 +279,7 @@ const handleLike = async (isCancel: boolean) => {
 
 onMounted(async () => {
   await loadNewsDetail()
+  comment.setCommentList(newsInfo.value?.commentList || [])
   const availKey = []
   for (const key in newsInfo.value?.newsExt) {
     if (
@@ -304,6 +306,11 @@ onMounted(async () => {
 })
 </script>
 <style lang="scss" scoped>
+a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
 h3 {
   margin: 0;
   padding: 0;

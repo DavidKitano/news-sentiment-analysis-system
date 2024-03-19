@@ -30,7 +30,7 @@ const initChart = () => {
   const [AxisData, seriesData] = separateArray(objectToArrayWithValue(props.datums))
   const option = {
     grid: {
-      top: '10px',
+      top: '30px',
       left: '0',
       right: '4%',
       bottom: '3%',
