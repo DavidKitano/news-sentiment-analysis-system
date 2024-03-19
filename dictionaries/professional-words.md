@@ -26,4 +26,6 @@ Việt
 nsas
 
 dto
+
+gpt
 ## 术语

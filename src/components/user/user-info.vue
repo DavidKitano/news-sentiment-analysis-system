@@ -109,6 +109,7 @@
     destroy-on-close
     center
     append-to-body
+    lock-scroll
     :close-on-click-modal="false"
     :close-on-press-escape="false"
   >

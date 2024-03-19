@@ -19,6 +19,21 @@ const router = createRouter({
       component: () => import('../views/about/index.vue')
     },
     {
+      path: '/timeline',
+      name: 'timeline',
+      component: () => import('../views/timeline/index.vue')
+    },
+    {
+      path: '/atlas',
+      name: 'atlas',
+      component: () => import('../views/atlas/index.vue')
+    },
+    {
+      path: '/trend',
+      name: 'trend',
+      component: () => import('../views/trend/index.vue')
+    },
+    {
       path: '/auth',
       children: [
         {
@@ -46,7 +61,7 @@ const router = createRouter({
   ]
 })
 
-const whiteList = ['forbidden', 'not-found', 'login', 'register', 'home']
+const whiteList = ['forbidden', 'not-found', 'login', 'register', 'home', 'about']
 
 router.beforeEach(async (to, from, next) => {
   const res = await checkVersionUpdate()
@@ -59,6 +74,9 @@ router.beforeEach(async (to, from, next) => {
     })
   }
   if (whiteList.includes(to.name as string)) {
+    return next()
+  }
+  if (localStorage.getItem('nsasAuth')) {
     return next()
   }
   return next('/auth/forbidden')

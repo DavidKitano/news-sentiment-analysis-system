@@ -130,6 +130,14 @@
               <user-info />
             </section>
           </nsas-box>
+          <section class="right-footnote">
+            <a href="/about">
+              关于该项目的开发技术栈
+              <el-icon>
+                <i-ep-question-filled />
+              </el-icon>
+            </a>
+          </section>
         </el-aside>
       </el-container>
     </div>
@@ -343,6 +351,23 @@ $common-box-gap: 10px;
     top: calc(var(--el-menu-horizontal-height) + 10px);
     .right-content {
       padding-top: $common-box-gap;
+    }
+  }
+}
+
+.right-footnote {
+  margin-top: 10px;
+  font-size: 12px;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
