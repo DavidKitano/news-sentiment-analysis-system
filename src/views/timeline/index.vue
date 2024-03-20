@@ -1,30 +1,28 @@
 <template>
   <div class="common-layout">
     <el-container class="container">
-      <el-affix :offset="70">
-        <el-aside>
-          <nsas-box class="date-picker-box">
-            <el-date-picker
-              v-model="currentMonth"
-              type="month"
-              placeholder="Pick a month"
-              value-format="YYYY-MM"
-              style="width: 100%"
-              @change="getTimeline()"
-            />
-          </nsas-box>
-          <nsas-box>
-            <el-scrollbar max-height="500px" always>
-              <el-anchor type="underline" :offset="120" :bound="20">
-                <el-anchor-link v-for="time of timeSets" :key="time" :href="`#date-${time}`">
-                  {{ time }}
-                </el-anchor-link>
-              </el-anchor>
-              <el-empty v-if="timeSets.length <= 0" description="暂无可用数据" />
-            </el-scrollbar>
-          </nsas-box>
-        </el-aside>
-      </el-affix>
+      <el-aside class="left-aside">
+        <nsas-box class="date-picker-box">
+          <el-date-picker
+            v-model="currentMonth"
+            type="month"
+            placeholder="Pick a month"
+            value-format="YYYY-MM"
+            style="width: 100%"
+            @change="getTimeline()"
+          />
+        </nsas-box>
+        <nsas-box>
+          <el-scrollbar max-height="400px" always>
+            <el-anchor type="underline" :offset="120" :bound="20">
+              <el-anchor-link v-for="time of timeSets" :key="time" :href="`#date-${time}`">
+                {{ time }}
+              </el-anchor-link>
+            </el-anchor>
+            <el-empty v-if="timeSets.length <= 0" description="暂无可用数据" />
+          </el-scrollbar>
+        </nsas-box>
+      </el-aside>
       <el-main>
         <nsas-box v-loading="loading">
           <el-timeline>
@@ -37,7 +35,12 @@
                 hollow
                 placement="top"
               >
-                <el-card class="news" v-for="news of item.newsList" :key="news.title">
+                <el-card
+                  class="news pointer"
+                  v-for="news of item.newsList"
+                  :key="news.title"
+                  @click="jumpToDetail(news.newsId)"
+                >
                   <div class="news-content">
                     <div class="news-image-box" v-if="news.avatar">
                       <el-image :src="news.avatar" fit="cover" style="width: 150px">
@@ -57,10 +60,7 @@
                       <h2>{{ news.title }}</h2>
                       <el-divider />
                       <div class="sub-info">
-                        <el-text>新闻id：</el-text>
-                        <el-link type="primary" :href="`/news/${news.newsId}`" target="_blank">
-                          {{ news.newsId }}
-                        </el-link>
+                        <p>{{ news.summary }}</p>
                       </div>
                     </div>
                   </div>
@@ -77,10 +77,14 @@
 import { getTimeline as getTimelineApi } from '@/api/timeline'
 import type { TimeLineVO } from '@/api/timeline/type'
 import dayjs from 'dayjs'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const currentMonth = ref<string>(`${dayjs().format('YYYY-MM')}`)
 const timelineData = ref<TimeLineVO[]>([])
 const loading = ref<boolean>(false)
+
 const timeSets = computed(() => {
   return timelineData.value
     .map((item) => {
@@ -106,12 +110,24 @@ const getTimeline = async () => {
     loading.value = false
   }
 }
+
+const jumpToDetail = (newsId: string | number | undefined) => {
+  if (!newsId) return
+  const routeData = router.resolve({ path: `/news/${newsId}` })
+  window.open(routeData.href, '_blank')
+}
+
 onMounted(async () => {
   await getTimeline()
 })
 </script>
 <style lang="scss" scoped>
 .container {
+  .left-aside {
+    top: calc(var(--el-menu-horizontal-height) + 10px);
+    height: 100%;
+    position: sticky;
+  }
   .el-aside {
     margin-left: 20px;
   }
@@ -132,13 +148,6 @@ onMounted(async () => {
     }
     h2 {
       font-size: 18px;
-    }
-  }
-  .sub-info {
-    display: flex;
-    align-items: center;
-    el-link {
-      margin-left: 10px;
     }
   }
 }

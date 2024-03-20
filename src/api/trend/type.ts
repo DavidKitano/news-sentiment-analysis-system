@@ -5,6 +5,12 @@ export enum TrendDimension {
   WEEK = '1'
 }
 
+export enum Sentiment {
+  NEGATIVE = '0',
+  NEUTRAL = '1',
+  POSITIVE = '2'
+}
+
 export interface getTrendClusterRequest {
   options: string
 }
@@ -34,5 +40,5 @@ export interface SentimentAnalysisVO {
   /**
    * 标签
    */
-  tag?: string
+  tag?: Sentiment
 }

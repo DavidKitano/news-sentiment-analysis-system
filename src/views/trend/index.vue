@@ -19,7 +19,9 @@
           </div>
         </nsas-box>
         <nsas-box class="content-box">
-          <div v-if="pieChartData.length > 0">{{ pieChartData }}</div>
+          <div v-if="pieChartData.length > 0">
+            <chart-pie :datums="transformedPieData" width="400px" />
+          </div>
           <el-empty v-else description="暂无数据" />
         </nsas-box>
       </el-aside>
@@ -63,7 +65,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { TrendDimension, type SentimentAnalysisVO } from '@/api/trend/type'
+import { TrendDimension, type SentimentAnalysisVO, Sentiment } from '@/api/trend/type'
 import { getTrendClusterOptions, getTrendCluster, getTrendSentiment } from '@/api/trend'
 
 type OptionType = {
@@ -82,6 +84,26 @@ const clusterLoading = ref(false)
 const trendImageTypeDisabled = computed(() => {
   return trendDimension.value === TrendDimension.WEEK || trendDimension.value === TrendDimension.DAY
 })
+const transformedPieData = computed(() => {
+  return pieChartData.value.map((item) => ({
+    value: item.count,
+    name: getSentimentLabel(item.tag as Sentiment)
+  }))
+})
+
+const getSentimentLabel = (sentiment: Sentiment) => {
+  if (!sentiment) return ''
+  switch (sentiment) {
+    case Sentiment.NEGATIVE:
+      return '负面'
+    case Sentiment.NEUTRAL:
+      return '中立'
+    case Sentiment.POSITIVE:
+      return '正面'
+    default:
+      return ''
+  }
+}
 
 const shortcuts = [
   {
@@ -184,6 +206,11 @@ const getClusterImage = async () => {
     clusterLoading.value = false
   }
 }
+
+watch(trendDimension, async () => {
+  clusterOptions.value = []
+  await getOptions()
+})
 
 onMounted(async () => {
   await getOptions()

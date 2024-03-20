@@ -30,4 +30,8 @@ export interface TimeLineItem {
    * 新闻标题
    */
   title?: string
+  /**
+   * 新闻摘要
+   */
+  summary?: string
 }
