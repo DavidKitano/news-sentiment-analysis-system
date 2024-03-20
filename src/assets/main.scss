@@ -42,6 +42,9 @@ $common-box-gap: 10px;
     height: 100%;
     background-color: $common-bg-color;
     padding-top: $common-box-gap;
+    .el-main {
+      padding-top: 0;
+    }
   }
   .common-content {
     min-width: 600px;

@@ -9,6 +9,7 @@
               type="month"
               placeholder="Pick a month"
               value-format="YYYY-MM"
+              style="width: 100%"
               @change="getTimeline()"
             />
           </nsas-box>
@@ -111,11 +112,8 @@ onMounted(async () => {
 </script>
 <style lang="scss" scoped>
 .container {
-  :deep(.el-aside) {
+  .el-aside {
     margin-left: 20px;
-  }
-  :deep(.el-main) {
-    padding-top: 0;
   }
   .date-picker-box {
     margin-bottom: 10px;
