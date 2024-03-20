@@ -57,12 +57,17 @@
         {{ user.gender }}
       </el-descriptions-item>
       <template #extra>
-        <el-button type="primary" size="small" class="cell-item" @click="showDialog()">
-          编辑&nbsp;<el-icon> <i-ep-edit /> </el-icon>
-        </el-button>
+        <el-button-group type="primary" size="small">
+          <el-button class="cell-item" @click="showDialog('password')"> 修改密码 </el-button>
+          <el-button class="cell-item" @click="showDialog('info')">
+            编辑&nbsp;<el-icon> <i-ep-edit /> </el-icon>
+          </el-button>
+        </el-button-group>
       </template>
       <template #title>
-        <el-button type="primary" size="small" @click="showDrawerFunc()"> 查看收藏新闻 </el-button>
+        <el-button type="primary" size="small" @click="showDrawerFunc()">
+          收藏&nbsp;<el-icon> <i-ep-star-filled /> </el-icon>
+        </el-button>
       </template>
     </el-descriptions>
   </div>
@@ -91,7 +96,18 @@
             </template>
             <section class="news-box pointer" @click="goToDetail(news.newsId)">
               <section class="news-avatar" v-if="news.avatar">
-                <el-image :src="news.avatar" :alt="news.title" style="width: 160px" lazy />
+                <el-image :src="news.avatar" :alt="news.title" style="width: 160px" lazy>
+                  <template #error>
+                    <div class="image-slot err-block">
+                      <el-icon><i-ep-picture /></el-icon>
+                    </div>
+                  </template>
+                  <template #placeholder>
+                    <div class="image-slot err-block">
+                      <el-icon class="is-loading"><i-ep-loading /></el-icon>
+                    </div>
+                  </template>
+                </el-image>
               </section>
               <h3>摘要</h3>
               <el-text>{{ news.summary }}</el-text>
@@ -115,16 +131,18 @@
   >
     <template #header>
       <h2 style="color: #7d7d7d">
-        <strong>编辑用户信息</strong>
+        <strong>{{ dialogTitle }}</strong>
       </h2>
     </template>
     <user-modify
       :id="String(user.userId)"
+      :type="dialogType"
       :gender="user.gender"
       :account="user.account"
       :email="user.email"
       :username="user.username"
       :avatar="user.avatar"
+      @update:visible="(val: boolean) => (dialogVisible = val)"
     />
   </el-dialog>
 </template>
@@ -137,12 +155,17 @@ const user = useUser()
 
 const showDrawer = ref<boolean>(false)
 const dialogVisible = ref<boolean>(false)
+const dialogType = ref<'info' | 'password'>('info')
 const loading = ref<boolean>(false)
 const collectedNewsList = ref<newsData[]>([])
 const pageInfo = ref({
   currentPage: 0,
   pageSize: 10,
   total: 0
+})
+
+const dialogTitle = computed(() => {
+  return dialogType.value === 'info' ? '编辑用户信息' : '修改密码'
 })
 
 const goToDetail = async (id: string) => {
@@ -161,8 +184,8 @@ const showDrawerFunc = async () => {
   showDrawer.value = true
   await loadCollectedNewsList()
 }
-const showDialog = () => {
-  console.log('aa')
+const showDialog = (type: 'info' | 'password') => {
+  dialogType.value = type
   dialogVisible.value = true
 }
 

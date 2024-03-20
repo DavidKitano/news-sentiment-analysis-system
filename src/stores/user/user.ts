@@ -15,6 +15,18 @@ export const useUser = defineStore('user', {
   actions: {
     setUserInfo(userInfo: any) {
       this.userInfo = userInfo
+    },
+    setAvatar(avatar: string) {
+      this.userInfo.userInfo.avatar = avatar
+    },
+    setGender(gender: string) {
+      this.userInfo.userInfo.gender = gender
+    },
+    setUsername(username: string) {
+      this.userInfo.user.username = username
+    },
+    setEmail(email: string) {
+      this.userInfo.user.email = email
     }
   }
 })

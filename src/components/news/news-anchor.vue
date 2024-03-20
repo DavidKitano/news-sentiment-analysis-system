@@ -1,5 +1,5 @@
 <template>
-  <el-anchor type="underline" :offset="70">
+  <el-anchor type="underline" :offset="120" :bound="20">
     <el-anchor-link v-for="item of catalogue.list" :key="item.label" :href="`#${item.anchor}`">
       {{ item.label }}
     </el-anchor-link>

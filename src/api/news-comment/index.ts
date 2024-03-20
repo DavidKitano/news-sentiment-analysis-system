@@ -1,10 +1,15 @@
 import webapi, { type Response } from '../service'
 import type * as comp from './type'
 
-// app-news-show/news/comment
+// app-news-show/news/comment POST
+export const postNewsComment = (
+  params: comp.AppNewsPostNewsCommentRequest
+): Response<comp.AppNewsPostNewsCommentResponse> => webapi.post(`/app-news-show/news/comment`, params)
+
+// app-news-show/news/comment GET
 export const getNewsComment = (
   params: comp.AppNewsShowNewsCommentRequest
-): Response<comp.AppNewsShowNewsCommentResponse> => webapi.get(`/app-news-show/news/comment/${params.id}`, {})
+): Response<comp.AppNewsShowNewsCommentResponse> => webapi.get(`/app-news-show/news/comment`, { params: params })
 
 // app-news-show/news/comment/history
 export const getNewsCommentHistory = (
@@ -20,5 +25,4 @@ export const deleteNewsComment = (
 // app-news-show/news/comment update
 export const updateNewsComment = (
   params: comp.AppNewsShowNewsCommentUpdateRequest
-): Response<comp.AppNewsShowNewsCommentUpdateResponse> =>
-  webapi.put(`/app-news-show/news/comment/${params.id}`, params.data)
+): Response<comp.AppNewsShowNewsCommentUpdateResponse> => webapi.put(`/app-news-show/news/comment`, params)

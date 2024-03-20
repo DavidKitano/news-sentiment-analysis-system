@@ -58,6 +58,8 @@ qiankun
 
 echarts
 
+popconfirm
+
 ## 缩写词
 btn # button
 

@@ -22,6 +22,7 @@ const props = defineProps<{
 }>()
 
 const chartRef = ref<HTMLDivElement>()
+let histogramChart: echarts.ECharts
 const dataCount = computed(() => {
   return Object.keys(props.datums).length
 })
@@ -55,7 +56,7 @@ const initChart = () => {
       }
     ]
   }
-  const histogramChart = echarts.init(chartRef.value)
+  histogramChart = echarts.init(chartRef.value)
   histogramChart.setOption(option)
   histogramChart.resize()
   window.addEventListener('resize', () => {
@@ -68,7 +69,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  echarts.dispose(chartRef.value as HTMLDivElement)
+  histogramChart.dispose()
 })
 </script>
 <style lang="scss" scoped>

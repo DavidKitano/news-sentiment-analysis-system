@@ -1,6 +1,17 @@
 <template>
   <div class="auth-non-logged-box-container">
-    <el-image class="nav-bar-image" src="/favicon.ico" fit="cover" />
+    <el-image class="nav-bar-image" src="/favicon.ico" fit="cover">
+      <template #error>
+        <div class="image-slot err-block">
+          <el-icon><i-ep-picture /></el-icon>
+        </div>
+      </template>
+      <template #placeholder>
+        <div class="image-slot err-block">
+          <el-icon class="is-loading"><i-ep-loading /></el-icon>
+        </div>
+      </template>
+    </el-image>
     <el-button-group class="function-btn">
       <el-button type="primary" @click="goAuth('login')">登录</el-button>
       <el-button type="primary" text @click="goAuth('register')"> 注册 </el-button>

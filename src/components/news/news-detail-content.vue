@@ -68,7 +68,18 @@
       </section>
       <el-divider />
       <section class="img-container">
-        <el-image :src="newsContent?.avatar" class="news-cover" />
+        <el-image :src="newsContent?.avatar" class="news-cover">
+          <template #error>
+            <div class="image-slot err-block">
+              <el-icon><i-ep-picture /></el-icon>
+            </div>
+          </template>
+          <template #placeholder>
+            <div class="image-slot err-block">
+              <el-icon class="is-loading"><i-ep-loading /></el-icon>
+            </div>
+          </template>
+        </el-image>
       </section>
       <el-divider id="summary" class="news-title" content-position="left"><h3>摘要</h3></el-divider>
       <el-text tag="p" class="summary" v-for="paragraph of newsSummary" :key="paragraph">
@@ -78,7 +89,18 @@
       <div class="carousel-images" v-if="newsInfo?.newsImg?.length">
         <el-carousel height="200px">
           <el-carousel-item v-for="imgItem in newsInfo?.newsImg" :key="imgItem.url">
-            <el-image :src="imgItem.url" fit="contain" style="width: 100%; height: 100%"></el-image>
+            <el-image :src="imgItem.url" fit="contain" style="width: 100%; height: 100%">
+              <template #error>
+                <div class="image-slot err-block">
+                  <el-icon><i-ep-picture /></el-icon>
+                </div>
+              </template>
+              <template #placeholder>
+                <div class="image-slot err-block">
+                  <el-icon class="is-loading"><i-ep-loading /></el-icon>
+                </div>
+              </template>
+            </el-image>
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -99,7 +121,18 @@
                 <el-tag class="data-tag-item" v-for="tagItem of item.data" :key="tagItem + ''"> {{ tagItem }} </el-tag>
               </template>
               <template v-else-if="item.type === DataType.IMAGE">
-                <el-image :src="'' + item.data" />
+                <el-image :src="'' + item.data">
+                  <template #error>
+                    <div class="image-slot err-block">
+                      <el-icon><i-ep-picture /></el-icon>
+                    </div>
+                  </template>
+                  <template #placeholder>
+                    <div class="image-slot err-block">
+                      <el-icon class="is-loading"><i-ep-loading /></el-icon>
+                    </div>
+                  </template>
+                </el-image>
               </template>
               <template v-else-if="item.type === DataType.AUDIO">
                 <audio controls>
@@ -163,6 +196,7 @@ const props = defineProps<{
   lang: 'cn' | 'en' | 'vi' | 'inline'
   id: string | number
 }>()
+const emit = defineEmits(['onLoading'])
 
 const comment = useComments()
 const catalogue = useCatalogue()
@@ -215,11 +249,11 @@ const loadNewsDetail = async () => {
   try {
     const [hasError, data] = await getNewsDetail({ id: props.id as string })
     if (hasError) {
-      console.log(data.msg)
       return data?.msg && ElMessage.error(data.msg)
     }
     newsInfo.value = data.data
     newsContent.value = data.data.news
+    emit('onLoading', false)
   } catch (error) {
     console.error(error)
   } finally {
@@ -291,7 +325,6 @@ onMounted(async () => {
       availKey.push({ label: newsInfo.value.newsExt[key].tag!, anchor: key })
     }
   }
-  console.log(availKey)
   catalogue.setCatalogue([
     { label: '标题', anchor: 'title' },
     { label: '摘要', anchor: 'summary' },

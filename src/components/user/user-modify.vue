@@ -1,51 +1,72 @@
 <template>
   <el-main v-loading="loading">
-    <el-upload
-      action="../nsas-api/app-system-file/file"
-      class="avatar-uploader"
-      accept="image/png, image/jpeg"
-      :data="{
-        type: 1
-      }"
-      :show-file-list="false"
-      :with-credentials="true"
-      :on-success="handleAvatarSuccess"
-      :on-error="handleAvatarError"
-      :before-upload="beforeAvatarUpload"
-    >
-      <img v-if="form.ext.avatar" :src="form.ext.avatar" class="avatar" />
-      <el-icon v-else class="avatar-uploader-icon"><i-ep-plus /></el-icon>
-    </el-upload>
-    <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="auto" status-icon>
-      <el-form-item label="账号" prop="account">
-        <el-input v-model="form.account" placeholder="请输入账号" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" placeholder="请输入邮箱" type="email" />
-      </el-form-item>
-      <el-form-item label="昵称" prop="username">
-        <el-input v-model="form.username" placeholder="请输入昵称" />
-      </el-form-item>
-      <el-form-item label="性别" prop="gender">
-        <el-select v-model="form.ext.gender" placeholder="请选择性别">
-          <el-option v-for="item in genderOptions" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label=" " class="register-btn-group">
-        <el-button type="primary" @click="submitForm(ruleFormRef)">提交</el-button>
-        <el-button @click="resetForm()">恢复修改</el-button>
-      </el-form-item>
-    </el-form>
+    <template v-if="type === 'info'">
+      <el-upload
+        action="../nsas-api/app-system-file/file"
+        class="avatar-uploader"
+        accept="image/png, image/jpeg"
+        :data="{
+          type: 1
+        }"
+        :show-file-list="false"
+        :with-credentials="true"
+        :on-success="handleAvatarSuccess"
+        :on-error="handleAvatarError"
+        :before-upload="beforeAvatarUpload"
+      >
+        <img v-if="infoForm.ext.avatar" :src="infoForm.ext.avatar" class="avatar" />
+        <el-icon v-else class="avatar-uploader-icon"><i-ep-plus /></el-icon>
+      </el-upload>
+      <el-form ref="infoRuleFormRef" :model="infoForm" :rules="infoRules" label-width="auto" status-icon>
+        <el-form-item label="账号" prop="account">
+          <el-input v-model="infoForm.account" placeholder="请输入账号" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="infoForm.email" placeholder="请输入邮箱" type="email" />
+        </el-form-item>
+        <el-form-item label="昵称" prop="username">
+          <el-input v-model="infoForm.username" placeholder="请输入昵称" />
+        </el-form-item>
+        <el-form-item label="性别" prop="gender">
+          <el-select v-model="infoForm.ext.gender" placeholder="请选择性别">
+            <el-option v-for="item in genderOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label=" " class="register-btn-group">
+          <el-button type="primary" @click="submitForm(infoRuleFormRef)">提交</el-button>
+          <el-button @click="resetForm()">恢复修改</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
+    <template v-else>
+      <el-form ref="passRuleFormRef" :model="passForm" :rules="passRules" label-width="auto" status-icon>
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="passForm.oldPassword" placeholder="请输入旧密码" type="password" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="password">
+          <el-input v-model="passForm.password" placeholder="请输入新密码" type="password" />
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input v-model="passForm.confirmPassword" placeholder="请再次输入新密码" type="password" />
+        </el-form-item>
+        <el-form-item label=" " class="register-btn-group">
+          <el-button type="primary" @click="changePassword(passRuleFormRef)">修改</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
   </el-main>
 </template>
 <script setup lang="ts">
-import { modUserInfo } from '@/api/user'
+import { modUserInfo, changePassword as changePasswordApi } from '@/api/user'
+import { useAuth } from '@/stores/auth/auth'
+import { useUser } from '@/stores/user/user'
 import { isURL } from '@/utils/common'
 import type { FormInstance, FormRules, UploadProps } from 'element-plus'
 
 const props = withDefaults(
   defineProps<{
     id: string
+    type?: 'info' | 'password'
     gender?: string
     account?: string
     email?: string
@@ -53,6 +74,7 @@ const props = withDefaults(
     avatar?: string
   }>(),
   {
+    type: 'info',
     gender: '保密',
     account: '',
     email: '',
@@ -61,11 +83,15 @@ const props = withDefaults(
   }
 )
 
-const ruleFormRef = ref<FormInstance>()
+const infoRuleFormRef = ref<FormInstance>()
+const passRuleFormRef = ref<FormInstance>()
 
 const loading = ref<boolean>(false)
 
-const form = ref({
+const user = useUser()
+const auth = useAuth()
+
+const infoForm = ref({
   account: props.account,
   email: props.email,
   username: props.username,
@@ -73,6 +99,11 @@ const form = ref({
     avatar: props.avatar,
     gender: props.gender
   }
+})
+const passForm = ref({
+  oldPassword: '',
+  password: '',
+  confirmPassword: ''
 })
 
 const genderOptions = [
@@ -94,7 +125,17 @@ const genderOptions = [
   }
 ]
 
-const rules = reactive<FormRules>({
+const validatePassAgain = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'))
+  } else if (value !== passForm.value.password) {
+    callback(new Error('两次输入的密码不匹配'))
+  } else {
+    callback()
+  }
+}
+
+const infoRules = reactive<FormRules>({
   account: [
     { required: true, message: '请输入账号', trigger: ['blur', 'change'] },
     { min: 6, max: 15, message: '账号长度应在6~15位之间', trigger: 'blur' }
@@ -109,20 +150,31 @@ const rules = reactive<FormRules>({
   ],
   username: [{ required: true, message: '请输入昵称', trigger: ['blur', 'change'] }]
 })
+const passRules = reactive<FormRules>({
+  oldPassword: [{ required: true, message: '请输入旧密码', trigger: ['blur', 'change'] }],
+  password: [
+    { required: true, message: '请输入新密码', trigger: ['blur', 'change'] },
+    { min: 6, max: 15, message: '密码长度应在6~15位之间', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    { required: true, message: '请再次输入新密码', trigger: ['blur', 'change'] },
+    { min: 6, max: 15, message: '密码长度应在6~15位之间', trigger: 'blur' },
+    { validator: validatePassAgain, trigger: ['blur', 'change'] }
+  ]
+})
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response) => {
   ElMessage.success('上传成功')
-  form.value.ext.avatar = response.data
+  infoForm.value.ext.avatar = response.data
 }
 
 const handleAvatarError: UploadProps['onError'] = (err) => {
   ElMessage.error('上传失败')
   console.error(err)
-  form.value.ext.avatar = ''
+  infoForm.value.ext.avatar = ''
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  console.log(rawFile.type)
   if (rawFile.type !== 'image/png' && rawFile.type !== 'image/jpeg') {
     ElMessage.error('头像文件只能为PNG、JPG图片!')
     return false
@@ -133,23 +185,55 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   return true
 }
 
+const emit = defineEmits(['update:visible'])
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
   try {
-    if (Object.prototype.hasOwnProperty.call(form.value, 'password')) {
-      delete (form.value as any).password
+    if (Object.prototype.hasOwnProperty.call(infoForm.value, 'password')) {
+      delete (infoForm.value as any).password
     }
   } catch (error) {
     console.error(error + 'Delete failed')
   }
   try {
     loading.value = true
-    const [hasError, data] = await modUserInfo(form.value)
+    const [hasError, data] = await modUserInfo(infoForm.value)
     if (hasError) {
       return data?.msg && ElMessage.error(data.msg)
     }
     ElMessage.success('修改成功')
+    user.setAvatar(infoForm.value.ext.avatar)
+    user.setUsername(infoForm.value.username)
+    user.setGender(infoForm.value.ext.gender)
+    user.setEmail(infoForm.value.email)
+    emit('update:visible', false)
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('修改失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+const changePassword = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate()
+  try {
+    loading.value = true
+    const [hasError, data] = await changePasswordApi({
+      currentPassword: passForm.value.oldPassword,
+      newPassword: passForm.value.password
+    })
+    if (hasError) {
+      return data?.msg && ElMessage.error(data.msg)
+    }
+    ElMessage.success('修改成功')
+    setTimeout(() => {
+      emit('update:visible', false)
+      auth.clearAuth()
+      window.location.href = '/auth/login'
+    }, 1000)
   } catch (error) {
     console.error(error)
     ElMessage.error('修改失败')
@@ -159,7 +243,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 }
 
 const resetForm = () => {
-  form.value = {
+  infoForm.value = {
     account: props.account,
     email: props.email,
     username: props.username,
@@ -172,7 +256,7 @@ const resetForm = () => {
 
 onMounted(() => {
   if (!isURL(props.avatar)) {
-    form.value.ext.avatar = ''
+    infoForm.value.ext.avatar = ''
   }
 })
 </script>

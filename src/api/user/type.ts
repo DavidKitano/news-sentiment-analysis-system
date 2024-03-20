@@ -138,3 +138,17 @@ export interface UserExtDTO {
 export interface modUserResponse extends BaseResponse {
   data: null
 }
+
+export interface changePasswordRequest {
+  /**
+   * 新密码
+   */
+  newPassword: string
+  /**
+   * 旧密码
+   */
+  currentPassword: string
+}
+export interface changePasswordResponse extends BaseResponse {
+  data: null
+}

@@ -188,6 +188,10 @@ export interface UserNewsCommentDO {
    */
   id?: number
   /**
+   * 是否为本人评论
+   */
+  isSelf?: boolean
+  /**
    * 新闻id
    */
   newsId?: string
@@ -199,6 +203,14 @@ export interface UserNewsCommentDO {
    * 用户名
    */
   username?: string
+  /**
+   * 创建时间
+   */
+  createTime?: string
+  /**
+   * 更新时间
+   */
+  updateTime?: string
 }
 export interface NewsMultiLanguageDo {
   /**

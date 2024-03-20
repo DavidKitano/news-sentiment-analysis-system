@@ -21,7 +21,18 @@
                     </el-text>
                   </template>
                   <template #default>
-                    <el-image :src="hotNews.avatar" />
+                    <el-image :src="hotNews.avatar">
+                      <template #error>
+                        <div class="image-slot err-block">
+                          <el-icon><i-ep-picture /></el-icon>
+                        </div>
+                      </template>
+                      <template #placeholder>
+                        <div class="image-slot err-block">
+                          <el-icon class="is-loading"><i-ep-loading /></el-icon>
+                        </div>
+                      </template>
+                    </el-image>
                   </template>
                 </el-popover>
               </el-timeline-item>
@@ -90,7 +101,18 @@
                   </template>
                   <section class="news-box pointer" @click="goToDetail(news.newsId)">
                     <section class="news-avatar" v-if="news.avatar">
-                      <el-image :src="news.avatar" :alt="news.title" style="width: 160px" lazy />
+                      <el-image :src="news.avatar" :alt="news.title" style="width: 160px" lazy>
+                        <template #error>
+                          <div class="image-slot err-block">
+                            <el-icon><i-ep-picture /></el-icon>
+                          </div>
+                        </template>
+                        <template #placeholder>
+                          <div class="image-slot err-block">
+                            <el-icon class="is-loading"><i-ep-loading /></el-icon>
+                          </div>
+                        </template>
+                      </el-image>
                     </section>
                     <h3>摘要</h3>
                     <el-text>{{ news.summary }}</el-text>
@@ -234,7 +256,6 @@ onMounted(async () => {
   }
   await loadNewsList(false)
   await loadHotNewsList()
-  console.log(route)
 })
 
 onUpdated(async () => {
@@ -273,20 +294,7 @@ $common-box-gap: 10px;
   }
 }
 .common-layout {
-  min-height: 100vh;
-  width: 100%;
-  height: max-content;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  .container {
-    height: 100%;
-    background-color: $common-bg-color;
-    padding-top: $common-box-gap;
-  }
   .common-content {
-    min-width: 600px;
-    width: 100%;
     .loading-box {
       text-align: center;
       display: flex;

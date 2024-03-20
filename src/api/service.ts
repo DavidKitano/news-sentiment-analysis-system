@@ -133,7 +133,6 @@ api.interceptors.response.use(
   },
   (error) => {
     const auth = useAuth()
-    console.log(error)
     if (error.response.data.error === 'invalid_grant' && error.response.data.error_description === 'Bad credentials') {
       return Promise.resolve([true, { msg: '用户名或密码错误，请重新输入' }])
     }

@@ -8,7 +8,7 @@
         <strong> 新闻详情 </strong>
       </template>
       <div class="mt-4 text-sm font-bold">
-        <news-detail-content :lang="activeName" :id="id">
+        <news-detail-content :lang="activeName" :id="id" @on-loading="commentLoading = false">
           <template #titleTab>
             <el-tabs v-model="activeName" tabPosition="left">
               <el-tab-pane label="Tiếng Việt" name="vi" />
@@ -35,36 +35,34 @@
         </el-avatar>
         <el-text v-else tag="b">请登录后评论~</el-text>
       </template>
-      <section class="comment-list">
-        <template v-if="comment.commentList.length > 0">
-          {{ comment.commentList }}
-        </template>
-        <template v-else>
-          <el-empty description="暂无评论" />
-        </template>
-      </section>
-      <section class="comment-box">
-        <el-form ref="ruleFormRef" :model="ruleForm" label-width="auto" status-icon :rules="rules">
-          <el-form-item label="输入评论" prop="editingComment">
-            <el-input
-              type="textarea"
-              v-model="ruleForm.editingComment"
-              placeholder="请输入评论"
-              clearable
-              :rows="6"
-              :show-word-limit="true"
-              :maxlength="600"
-              :validate-event="false"
-              resize="none"
-              @clear="ruleForm.editingComment = ''"
-            />
-          </el-form-item>
-          <div class="comment-box-btn">
-            <el-button style="width: 50%" type="default" plain @click="ruleForm.editingComment = ''">清空</el-button>
-            <el-button style="width: 50%" type="primary" @click="sendComment(ruleFormRef)">评论</el-button>
-          </div>
-        </el-form>
-      </section>
+      <div v-loading="commentLoading">
+        <section class="comment-list">
+          <news-comment-box :comments="realtimeCommentList" @on-update="flushNewsComment()" />
+        </section>
+        <el-divider />
+        <section class="comment-box">
+          <el-form ref="ruleFormRef" :model="ruleForm" label-width="auto" status-icon :rules="rules">
+            <el-form-item label="输入评论" prop="editingComment">
+              <el-input
+                type="textarea"
+                v-model="ruleForm.editingComment"
+                placeholder="请输入评论"
+                clearable
+                :rows="6"
+                :show-word-limit="true"
+                :maxlength="600"
+                :validate-event="false"
+                resize="none"
+                @clear="ruleForm.editingComment = ''"
+              />
+            </el-form-item>
+            <div class="comment-box-btn">
+              <el-button style="width: 50%" type="default" plain @click="clearComment()">清空</el-button>
+              <el-button style="width: 50%" type="primary" @click="sendComment(ruleFormRef)">评论</el-button>
+            </div>
+          </el-form>
+        </section>
+      </div>
     </el-page-header>
   </nsas-box>
 </template>
@@ -72,10 +70,11 @@
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { useAuth } from '@/stores/auth/auth'
 import { useUser } from '@/stores/user/user'
-import { useComments } from '@/stores/news/comments'
 import type { FormInstance, FormRules } from 'element-plus'
+import { getNewsComment, postNewsComment } from '@/api/news-comment'
+import { useComments } from '@/stores/news/comments'
 
-defineProps<{
+const props = defineProps<{
   id: string
 }>()
 
@@ -87,7 +86,9 @@ const user = useUser()
 const comment = useComments()
 
 const activeName = ref<'vi' | 'cn' | 'en'>('vi')
+const commentLoading = ref<boolean>(true)
 
+const realtimeCommentList = computed(() => comment.commentList)
 const ruleForm = reactive({
   editingComment: ''
 })
@@ -104,6 +105,26 @@ const rules = reactive<FormRules<typeof ruleForm>>({
   editingComment: [{ validator: checkIsEmpty, trigger: 'blur' }]
 })
 
+const clearComment = () => {
+  ruleForm.editingComment = ''
+}
+
+const flushNewsComment = async () => {
+  commentLoading.value = true
+  try {
+    const [hasError, data] = await getNewsComment({ newsId: props.id })
+    if (hasError) {
+      return data?.msg && ElMessage.error(data.msg)
+    }
+    comment.setCommentList(data.data || [])
+  } catch (e) {
+    console.error(e)
+    ElMessage.error('获取评论失败')
+  } finally {
+    commentLoading.value = false
+  }
+}
+
 const sendComment = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
@@ -112,7 +133,24 @@ const sendComment = async (formEl: FormInstance | undefined) => {
       .replace(/\s+\r\n/g, '\r\n')
       .replace(/\s+\r/g, '\r')
       .replace(/\s+\n/g, '\n')
-    console.log(tempComment)
+    commentLoading.value = true
+    try {
+      const [hasError, data] = await postNewsComment({
+        newsId: props.id,
+        content: tempComment
+      })
+      if (hasError) {
+        return data?.msg && ElMessage.error(data.msg)
+      }
+      ElMessage.success('评论成功')
+      clearComment()
+      flushNewsComment()
+    } catch (error) {
+      console.error(error)
+      ElMessage.error('评论失败')
+    } finally {
+      commentLoading.value = false
+    }
   }
 }
 const back = () => {

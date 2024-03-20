@@ -1,13 +1,21 @@
 import { defineStore } from 'pinia'
+import type { UserNewsCommentDO } from '@/api/news/type'
 
 export const useComments = defineStore('comments', {
   state: () => ({
-    commentList: [] as any[]
+    commentList: [] as UserNewsCommentDO[]
   }),
   getters: {},
   actions: {
-    setCommentList(list: any[]) {
+    setCommentList(list: UserNewsCommentDO[]) {
       this.commentList = list
+    },
+    pushComment(comment: UserNewsCommentDO | UserNewsCommentDO[]) {
+      if (Array.isArray(comment)) {
+        this.commentList.push(...comment)
+      } else {
+        this.commentList.push(comment)
+      }
     }
   }
 })
