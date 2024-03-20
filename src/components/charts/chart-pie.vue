@@ -1,24 +1,17 @@
 <template>
   <div class="chart-pie">
     <el-scrollbar>
-      <div
-        id="pieChart"
-        ref="chartRef"
-        :style="{
-          width: parseWidth + 'px',
-          height: width + 'px'
-        }"
-      ></div>
+      <div id="pieChart" ref="chartRef"></div>
     </el-scrollbar>
   </div>
 </template>
 <script lang="ts" setup>
 import * as echarts from 'echarts'
 const props = defineProps<{
-  width: string
   datums: {
-    [key: string]: any
-  }
+    value: number | string
+    name: string
+  }[]
 }>()
 
 const chartRef = ref<HTMLDivElement>()

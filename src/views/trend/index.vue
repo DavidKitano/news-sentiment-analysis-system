@@ -20,7 +20,7 @@
         </nsas-box>
         <nsas-box class="content-box">
           <div v-if="pieChartData.length > 0">
-            <chart-pie :datums="transformedPieData" width="400px" />
+            <chart-pie :datums="transformedPieData" />
           </div>
           <el-empty v-else description="暂无数据" />
         </nsas-box>
@@ -32,7 +32,6 @@
               <el-option label="天维度" :value="TrendDimension.DAY" />
               <el-option label="周维度" :value="TrendDimension.WEEK" />
             </el-select>
-
             <el-select
               :disabled="!trendImageTypeDisabled"
               v-model="trendClusterType"
@@ -86,7 +85,7 @@ const trendImageTypeDisabled = computed(() => {
 })
 const transformedPieData = computed(() => {
   return pieChartData.value.map((item) => ({
-    value: item.count,
+    value: item.count || 0,
     name: getSentimentLabel(item.tag as Sentiment)
   }))
 })
