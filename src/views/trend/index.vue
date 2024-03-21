@@ -28,7 +28,12 @@
       <el-main>
         <nsas-box>
           <div class="date-range-picker-box">
-            <el-select v-model="trendDimension" placeholder="选择维度" style="width: 100px">
+            <el-select
+              v-model="trendDimension"
+              placeholder="选择维度"
+              style="width: 100px"
+              @change="trendClusterType = ''"
+            >
               <el-option label="天维度" :value="TrendDimension.DAY" />
               <el-option label="周维度" :value="TrendDimension.WEEK" />
             </el-select>
