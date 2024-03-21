@@ -65,59 +65,22 @@
         </el-button-group>
       </template>
       <template #title>
-        <el-button type="primary" size="small" @click="showDrawerFunc()">
-          收藏&nbsp;<el-icon> <i-ep-star-filled /> </el-icon>
-        </el-button>
+        <el-dropdown type="primary">
+          <el-button type="primary" size="small">
+            菜单<el-icon class="el-icon--right"><i-ep-arrow-down /></el-icon>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="showCollectedFunc()">查看已收藏的新闻</el-dropdown-item>
+              <el-dropdown-item @click="showCommentHistoryFunc()">查询历史评论</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </template>
     </el-descriptions>
   </div>
-  <el-drawer size="50%" class="user-info-drawer" v-model="showDrawer" direction="rtl" destroy-on-close append-to-body>
-    <template #header>
-      <h2>已收藏新闻</h2>
-    </template>
-    <template #default>
-      <el-scrollbar>
-        <el-affix :offset="60">
-          <nsas-box style="width: 100%">
-            <el-pagination
-              small
-              background
-              layout="sizes, prev, pager, next, ->, jumper, total"
-              :total="pageInfo.total"
-              :page-sizes="[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-          /></nsas-box>
-        </el-affix>
-        <div v-if="collectedNewsList.length > 0">
-          <nsas-box class="main-content" v-for="news in collectedNewsList" :key="news.title">
-            <template #header>
-              <h2 class="pointer news-title" @click="goToDetail(news.newsId)">{{ news.title }}</h2>
-            </template>
-            <section class="news-box pointer" @click="goToDetail(news.newsId)">
-              <section class="news-avatar" v-if="news.avatar">
-                <el-image :src="news.avatar" :alt="news.title" style="width: 160px" lazy>
-                  <template #error>
-                    <div class="image-slot err-block">
-                      <el-icon><i-ep-picture /></el-icon>
-                    </div>
-                  </template>
-                  <template #placeholder>
-                    <div class="image-slot err-block">
-                      <el-icon class="is-loading"><i-ep-loading /></el-icon>
-                    </div>
-                  </template>
-                </el-image>
-              </section>
-              <h3>摘要</h3>
-              <el-text>{{ news.summary }}</el-text>
-            </section>
-          </nsas-box>
-        </div>
-        <el-empty v-else description="没有收藏噢~" />
-      </el-scrollbar>
-    </template>
-  </el-drawer>
+  <news-collected :show="collectedShow" @update:show="(e) => closeNewsCollectedFunc(e)" />
+  <news-comment-history :show="commentedShow" @update:show="(e) => closeNewsCommentHistoryFunc(e)" />
   <el-dialog
     v-model="dialogVisible"
     :visible="dialogVisible"
@@ -147,63 +110,34 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { getCollect } from '@/api/news-collect'
-import type { newsData } from '@/api/news/type'
 import { useUser } from '@/stores/user/user'
 
 const user = useUser()
 
-const showDrawer = ref<boolean>(false)
 const dialogVisible = ref<boolean>(false)
+const collectedShow = ref<boolean>(false)
+const commentedShow = ref<boolean>(false)
 const dialogType = ref<'info' | 'password'>('info')
-const loading = ref<boolean>(false)
-const collectedNewsList = ref<newsData[]>([])
-const pageInfo = ref({
-  currentPage: 0,
-  pageSize: 10,
-  total: 0
-})
 
 const dialogTitle = computed(() => {
   return dialogType.value === 'info' ? '编辑用户信息' : '修改密码'
 })
 
-const goToDetail = async (id: string) => {
-  window.location.href = '/news/' + id
-}
-const handleSizeChange = async (val: number) => {
-  pageInfo.value.pageSize = val
-  pageInfo.value.currentPage = 0
-  await loadCollectedNewsList()
-}
-const handleCurrentChange = async (val: number) => {
-  pageInfo.value.currentPage = val - 1
-  await loadCollectedNewsList()
-}
-const showDrawerFunc = async () => {
-  showDrawer.value = true
-  await loadCollectedNewsList()
-}
 const showDialog = (type: 'info' | 'password') => {
   dialogType.value = type
   dialogVisible.value = true
 }
-
-const loadCollectedNewsList = async () => {
-  loading.value = true
-  try {
-    const [hasError, data] = await getCollect(pageInfo.value)
-    if (hasError) {
-      return data?.msg && ElMessage.error(data.msg)
-    }
-    collectedNewsList.value = (data.data.data as newsData[]) || ([] as newsData[])
-    pageInfo.value.total = data.data.total || 0
-  } catch (error) {
-    ElMessage.error('获取收藏新闻列表失败')
-    console.error(error)
-  } finally {
-    loading.value = false
-  }
+const showCommentHistoryFunc = () => {
+  commentedShow.value = true
+}
+const showCollectedFunc = () => {
+  collectedShow.value = true
+}
+const closeNewsCollectedFunc = (e: boolean) => {
+  collectedShow.value = e
+}
+const closeNewsCommentHistoryFunc = (e: boolean) => {
+  commentedShow.value = e
 }
 </script>
 <style lang="scss" scoped>

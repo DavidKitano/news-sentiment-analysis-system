@@ -19,9 +19,37 @@ export interface AppNewsShowNewsCommentResponse extends BaseResponse {
 }
 
 // app-news-show/news/comment/history
-export interface AppNewsShowNewsCommentHistoryRequest {}
+export interface AppNewsShowNewsCommentHistoryRequest {
+  currentPage: number
+  pageSize: number
+}
 export interface AppNewsShowNewsCommentHistoryResponse extends BaseResponse {
-  data: { [key: string]: any }
+  data: PageQueryResultOfUserCommentVO
+}
+export interface PageQueryResultOfUserCommentVO {
+  currentPage?: number
+  data?: UserCommentVO[]
+  pages?: number
+  pageSize?: number
+  total?: number
+}
+export interface UserCommentVO {
+  /**
+   * 评论内容
+   */
+  content?: string
+  /**
+   * 评论id
+   */
+  id?: number
+  /**
+   * 新闻id
+   */
+  newsId?: string
+  /**
+   * 新闻标题
+   */
+  title?: string
 }
 
 // app-news-show/news/comment delete
