@@ -12,13 +12,14 @@
 </template>
 <script lang="ts" setup>
 import type { GraphResultVO } from '@/api/relationship/type'
+import { objDeepEqual } from '@/utils/common'
 import * as echarts from 'echarts'
 const props = defineProps<{
   datums: GraphResultVO
 }>()
 
 const chartRef = ref<HTMLDivElement>()
-const cachePool = ref<Record<string, any>>([])
+const cachePool = ref<any[]>([])
 
 const formattedData = ref(props.datums)
 formattedData.value.nodes!.forEach((node) => {
@@ -27,12 +28,18 @@ formattedData.value.nodes!.forEach((node) => {
 })
 let relationChart: echarts.ECharts
 
-const emit = defineEmits(['onGetData'])
+const emit = defineEmits(['onGetData', 'onBack'])
+
+const pushCache = (data: any) => {
+  if (cachePool.value.length > 0 && objDeepEqual(data, cachePool.value[cachePool.value.length - 1])) return
+  cachePool.value.push(data)
+}
 const handleClick = (e: any) => {
-  cachePool.value.push(formattedData.value)
+  pushCache(formattedData.value)
   emit('onGetData', { id: e.data.id, category: e.data.category })
 }
 const handleBack = () => {
+  emit('onBack', true)
   formattedData.value = cachePool.value.pop()
   relationChart.setOption({
     series: [

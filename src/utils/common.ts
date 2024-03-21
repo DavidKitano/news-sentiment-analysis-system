@@ -45,3 +45,35 @@ export const separateArray = (arr: Array<Array<any>>) => {
   const values = arr.map((item) => item[1])
   return [keys, values]
 }
+
+/**
+ * 深度比较两个对象是否相等
+ * @param object1 对象1
+ * @param object2 对象2
+ * @returns 布尔值，是否相等
+ */
+export const objDeepEqual = (object1: Record<any, any>, object2: Record<any, any>) => {
+  const _isObject = (object: any) => {
+    return object != null && typeof object === 'object'
+  }
+
+  if (object1 === object2) return true
+
+  const keys1 = Object.keys(object1)
+  const keys2 = Object.keys(object2)
+
+  if (keys1.length !== keys2.length) {
+    return false
+  }
+
+  for (const key of keys1) {
+    const val1 = object1[key]
+    const val2 = object2[key]
+    const areObjects = _isObject(val1) && _isObject(val2)
+    if ((areObjects && !objDeepEqual(val1, val2)) || (!areObjects && val1 !== val2)) {
+      return false
+    }
+  }
+
+  return true
+}

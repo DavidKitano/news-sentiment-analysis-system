@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { isURL, isDataEmpty, objectToArrayWithValue, separateArray } from '../common'
+import { isURL, isDataEmpty, objectToArrayWithValue, separateArray, objDeepEqual } from '../common'
 
 describe('isURL function', () => {
   test('should return true for valid URLs', () => {
@@ -122,5 +122,21 @@ describe('separateArray function', () => {
       ['a', 'b', 'c', 'd'],
       [[1, 2, 3], void 0, { n: 44 }, null]
     ])
+  })
+})
+
+describe('objDeepEqual function', () => {
+  test('should compare two objects', () => {
+    expect(objDeepEqual({}, {})).toBe(true)
+    expect(objDeepEqual({ a: 1 }, { a: 1 })).toBe(true)
+    expect(objDeepEqual({ a: 1, b: 2 }, { a: 1, b: 2 })).toBe(true)
+    expect(objDeepEqual({ a: 1, b: 2 }, { b: 2, a: 1 })).toBe(true)
+    expect(objDeepEqual({ a: 1, b: 2 }, { a: 1, b: 3 })).toBe(false)
+    expect(objDeepEqual({ a: 1, b: 2 }, { a: 1, c: 2 })).toBe(false)
+    expect(objDeepEqual({ a: 1, b: 2 }, { a: 1 })).toBe(false)
+    expect(objDeepEqual({ a: 1, b: 2 }, { a: 1, b: 2, c: 3 })).toBe(false)
+    expect(objDeepEqual({ a: 1, b: 2 }, { 1: 2, 2: 3, 3: 4 })).toBe(false)
+    expect(objDeepEqual({ a: 1, b: 2 }, {})).toBe(false)
+    expect(objDeepEqual({ a: 1, b: 2 }, { a: 1, b: 3 })).toBe(false)
   })
 })
