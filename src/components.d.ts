@@ -13,6 +13,8 @@ declare module 'vue' {
     AuthRegister: typeof import('./components/auth/auth-register.vue')['default']
     ChartHistogram: typeof import('./components/charts/chart-histogram.vue')['default']
     ChartPie: typeof import('./components/charts/chart-pie.vue')['default']
+    ChartRelations: typeof import('./components/charts/chart-relations.vue')['default']
+    copy: typeof import('./components/charts/chart-pie copy.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAnchor: typeof import('element-plus/es')['ElAnchor']
     ElAnchorLink: typeof import('element-plus/es')['ElAnchorLink']

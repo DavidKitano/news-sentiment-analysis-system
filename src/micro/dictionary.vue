@@ -1,6 +1,6 @@
 <template>
   <div>
-    <micro-app name="dict" url="http://localhost:10101/vocabulary/list" iframe></micro-app>
+    <micro-app name="dict" :url="`http://${hostname}:10101/`" iframe></micro-app>
   </div>
   <nsas-box class="back-btn">
     <el-button type="primary" round @click="backToMain">返回主页</el-button>
@@ -10,6 +10,10 @@
 const backToMain = () => {
   window.location.href = '/'
 }
+
+const hostname = computed(() => {
+  return window.location.hostname
+})
 </script>
 <style>
 .back-btn {
