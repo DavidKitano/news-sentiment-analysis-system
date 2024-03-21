@@ -4,6 +4,7 @@
       <el-upload
         action="../nsas-api/app-system-file/file"
         class="avatar-uploader"
+        accept="image/png, image/jpeg, image/gif"
         :data="{
           type: 1
         }"
@@ -137,8 +138,8 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (response) => {
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('头像文件只能为JPG文件!')
+  if (rawFile.type !== 'image/png' && rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/gif') {
+    ElMessage.error('头像文件只能为JPG/PNG/GIF文件!')
     return false
   } else if (rawFile.size / 1024 / 1024 > 2) {
     ElMessage.error('头像大小需小于2MB!')

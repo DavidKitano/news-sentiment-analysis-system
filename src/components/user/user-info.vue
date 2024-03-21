@@ -11,9 +11,9 @@
   <div class="info-box">
     <el-divider>当前用户</el-divider>
     <el-descriptions class="margin-top" :column="1" size="small" border>
-      <el-descriptions-item>
+      <el-descriptions-item class-name="desc-content">
         <template #label>
-          <div class="cell-item">
+          <div class="cell-item cell-item-text">
             <el-icon>
               <i-ep-user />
             </el-icon>
@@ -22,9 +22,9 @@
         </template>
         {{ user.username }}
       </el-descriptions-item>
-      <el-descriptions-item>
+      <el-descriptions-item class-name="desc-content">
         <template #label>
-          <div class="cell-item">
+          <div class="cell-item cell-item-text">
             <el-icon>
               <i-ep-user />
             </el-icon>
@@ -33,10 +33,9 @@
         </template>
         {{ user.account }}
       </el-descriptions-item>
-
-      <el-descriptions-item>
+      <el-descriptions-item class-name="desc-content">
         <template #label>
-          <div class="cell-item">
+          <div class="cell-item cell-item-text">
             <el-icon>
               <i-ep-user />
             </el-icon>
@@ -45,9 +44,9 @@
         </template>
         {{ user.email }}
       </el-descriptions-item>
-      <el-descriptions-item>
+      <el-descriptions-item class-name="desc-content">
         <template #label>
-          <div class="cell-item">
+          <div class="cell-item cell-item-text">
             <el-icon>
               <i-ep-user />
             </el-icon>
@@ -160,6 +159,15 @@ $common-box-gap: 10px;
 .avatar-box {
   width: 100%;
   text-align: center;
+}
+
+:deep(.desc-content) {
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.cell-item-text {
+  width: max-content;
 }
 .cell-item {
   display: flex;

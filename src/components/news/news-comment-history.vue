@@ -110,7 +110,7 @@ const isEditing = ref(false)
 const loading = ref<boolean>(false)
 const commentedHistoryList = ref<UserCommentVO[]>([])
 const pageInfo = ref({
-  currentPage: 0,
+  currentPage: 1,
   pageSize: 10,
   total: 0
 })
@@ -123,7 +123,7 @@ const handleSizeChange = async (val: number) => {
   await loadCommentedHistoryList()
 }
 const handleCurrentChange = async (val: number) => {
-  pageInfo.value.currentPage = val - 1
+  pageInfo.value.currentPage = val
   await loadCommentedHistoryList()
 }
 const delNewsComment = async (id: string | null) => {
