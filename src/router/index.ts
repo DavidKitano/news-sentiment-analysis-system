@@ -54,6 +54,21 @@ const router = createRouter({
       ]
     },
     {
+      path: '/manage',
+      children: [
+        {
+          path: 'dict',
+          name: 'dict',
+          component: () => import('../micro/dictionary.vue')
+        },
+        {
+          path: 'user',
+          name: 'user',
+          component: () => import('../micro/user.vue')
+        }
+      ]
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/auth/404.vue')

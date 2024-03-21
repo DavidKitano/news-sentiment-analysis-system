@@ -16,7 +16,7 @@ const auth = useAuth()
 const user = useUser()
 
 const isMenuShow = computed(() => {
-  return !route.path.includes('auth')
+  return !route.path.includes('auth') && !route.path.includes('manage')
 })
 
 const privacyContent = {

@@ -73,10 +73,11 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 12345,
+    port: 10101,
     proxy: {
       '/nsas-api': {
         target: 'http://120.25.103.178:800',
+        ws: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/nsas-api/, '')
       }
@@ -84,10 +85,11 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    port: 12345,
+    port: 10101,
     proxy: {
       '/nsas-api': {
         target: 'http://120.25.103.178:800',
+        ws: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/nsas-api/, '')
       }

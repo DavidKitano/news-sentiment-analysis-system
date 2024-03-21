@@ -153,12 +153,17 @@
             </section>
           </nsas-box>
           <section class="right-footnote">
-            <a href="/about">
+            <el-link type="primary" style="font-size: smaller" href="/about">
               关于该项目的开发技术栈
               <el-icon>
                 <i-ep-question-filled />
               </el-icon>
-            </a>
+            </el-link>
+          </section>
+          <section class="right-footnote">
+            <el-link type="primary" style="font-size: smaller" href="/manage/dict"> 词典后台管理 </el-link>
+            <el-divider direction="vertical" />
+            <el-link type="primary" style="font-size: smaller" href="/manage/user"> 用户后台管理 </el-link>
           </section>
         </el-aside>
       </el-container>
@@ -364,14 +369,10 @@ $common-box-gap: 10px;
 }
 
 .right-footnote {
-  margin-top: 10px;
-  font-size: 12px;
-
-  a {
+  .el-text {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 2px;
-    color: inherit;
     text-decoration: none;
 
     &:hover {
