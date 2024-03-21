@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Aa: typeof import('./components/charts/aa.vue')['default']
     AuthError: typeof import('./components/auth/auth-error.vue')['default']
     AuthLogin: typeof import('./components/auth/auth-login.vue')['default']
     AuthNonLoggedBox: typeof import('./components/auth/auth-non-logged-box.vue')['default']
@@ -14,7 +15,6 @@ declare module 'vue' {
     ChartHistogram: typeof import('./components/charts/chart-histogram.vue')['default']
     ChartPie: typeof import('./components/charts/chart-pie.vue')['default']
     ChartRelations: typeof import('./components/charts/chart-relations.vue')['default']
-    copy: typeof import('./components/charts/chart-pie copy.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAnchor: typeof import('element-plus/es')['ElAnchor']
     ElAnchorLink: typeof import('element-plus/es')['ElAnchorLink']
@@ -45,6 +45,7 @@ declare module 'vue' {
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElImage: typeof import('element-plus/es')['ElImage']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     ElLink: typeof import('element-plus/es')['ElLink']
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
@@ -65,6 +66,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     IEpArrowDown: typeof import('~icons/ep/arrow-down')['default']
+    IEpArrowLeft: typeof import('~icons/ep/arrow-left')['default']
     IEpChatLineSquare: typeof import('~icons/ep/chat-line-square')['default']
     IEpDelete: typeof import('~icons/ep/delete')['default']
     IEpEdit: typeof import('~icons/ep/edit')['default']
@@ -80,7 +82,6 @@ declare module 'vue' {
     IEpTrendCharts: typeof import('~icons/ep/trend-charts')['default']
     IEpUser: typeof import('~icons/ep/user')['default']
     IEpUserFilled: typeof import('~icons/ep/user-filled')['default']
-    NesCommentHistory: typeof import('./components/user/nes-comment-history.vue')['default']
     NewsAnchor: typeof import('./components/news/news-anchor.vue')['default']
     NewsCollected: typeof import('./components/news/news-collected.vue')['default']
     NewsCommentBox: typeof import('./components/news/news-comment-box.vue')['default']
@@ -95,7 +96,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     StarLink: typeof import('./components/miscellaneous/star-link.vue')['default']
     TimeCountdown: typeof import('./components/miscellaneous/time-countdown.vue')['default']
-    UserCommentHistory: typeof import('./components/user/user-comment-history.vue')['default']
     UserInfo: typeof import('./components/user/user-info.vue')['default']
     UserModify: typeof import('./components/user/user-modify.vue')['default']
     WelcomeInfo: typeof import('./components/miscellaneous/welcome-info.vue')['default']

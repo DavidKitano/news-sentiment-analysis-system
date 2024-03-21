@@ -28,4 +28,6 @@ nsas
 dto
 
 gpt
+
+curveness
 ## 术语
