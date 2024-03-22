@@ -1,4 +1,4 @@
-name: "Manual: Test & Build & Deploy"
+name: "Test & Build & Deploy: Manually"
 
 on:
   workflow_dispatch:

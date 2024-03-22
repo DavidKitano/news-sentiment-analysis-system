@@ -1,4 +1,4 @@
-name: "Auto: Test & Build & Deploy"
+name: "Test & Build & Deploy: Automatically"
 
 on:
   push:
