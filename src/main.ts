@@ -32,4 +32,6 @@ app.use(router)
 //   locale: zhCn
 // })
 
+app.config.globalProperties.$microApp = microApp
+
 app.mount('#app')

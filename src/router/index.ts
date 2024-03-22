@@ -54,19 +54,9 @@ const router = createRouter({
       ]
     },
     {
-      path: '/manage',
-      children: [
-        {
-          path: 'dict',
-          name: 'dict',
-          component: () => import('../micro/dictionary.vue')
-        },
-        {
-          path: 'user',
-          name: 'user',
-          component: () => import('../micro/user.vue')
-        }
-      ]
+      path: '/manage/:routeName',
+      name: 'manage',
+      component: () => import('../micro/micro-apps.vue')
     },
     {
       path: '/:pathMatch(.*)*',
@@ -76,7 +66,7 @@ const router = createRouter({
   ]
 })
 
-const whiteList = ['forbidden', 'not-found', 'login', 'register', 'home', 'about']
+const whiteList = ['forbidden', 'not-found', 'login', 'register', 'home', 'about', 'manage']
 
 router.beforeEach(async (to, from, next) => {
   const res = await checkVersionUpdate()

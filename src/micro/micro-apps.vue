@@ -1,12 +1,29 @@
 <template>
-  <div>
+  <div v-if="specificRoute === 'user'">
     <micro-app name="user" :url="`http://${hostname}:20202/`" iframe></micro-app>
   </div>
+  <div v-else-if="specificRoute === 'dict'">
+    <micro-app name="dict" :url="`http://${hostname}:30303/`" iframe></micro-app>
+  </div>
+  <div v-else-if="specificRoute === 'news'">
+    <micro-app name="news" :url="`http://${hostname}:40404/`" iframe></micro-app>
+  </div>
+  <div v-else>
+    <auth-error>
+      <h1>404 Not Found - 页面未找到</h1>
+      <p>您访问的页面不存在</p>
+    </auth-error>
+  </div>
+
   <nsas-box class="back-btn grabbing">
     <el-button type="primary" round @click="backToMain">返回主页</el-button>
   </nsas-box>
 </template>
 <script lang="ts" setup>
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
 const backToMain = () => {
   window.location.href = '/'
 }
@@ -14,6 +31,7 @@ const backToMain = () => {
 const hostname = computed(() => {
   return window.location.hostname
 })
+const specificRoute = computed(() => route.params.routeName as string)
 
 onMounted(() => {
   const backBtn = document.querySelector('.back-btn') as HTMLDivElement
