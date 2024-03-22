@@ -80,7 +80,9 @@ const errorNotification = (status: number) => {
 }
 
 const api = axios.create({
-  baseURL: '/nsas-api'
+  baseURL: '/nsas-api',
+  timeout: 10000,
+  timeoutErrorMessage: '请求超时，请稍后重试'
 })
 
 let redirectTimer: any = null
