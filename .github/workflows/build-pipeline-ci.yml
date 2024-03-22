@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'v*'
+      - 'Release*'
+  schedule:
+    - cron: '0 20 * * *' # Every day at 4 AM (UTC+8)
 
 jobs:
   Prior_Build:
