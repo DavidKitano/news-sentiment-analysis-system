@@ -165,6 +165,10 @@
             <el-divider direction="vertical" />
             <el-link type="primary" style="font-size: smaller" href="/manage/user"> 用户后台管理 </el-link>
           </section>
+          <section class="right-footnote">
+            <el-divider />
+            <el-text size="small" type="primary">当前版本：v1.0.0</el-text>
+          </section>
         </el-aside>
       </el-container>
     </div>
