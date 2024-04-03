@@ -164,10 +164,12 @@
             <el-link type="primary" style="font-size: smaller" href="/manage/dict"> 词典后台管理 </el-link>
             <el-divider direction="vertical" />
             <el-link type="primary" style="font-size: smaller" href="/manage/user"> 用户后台管理 </el-link>
+            <el-divider direction="vertical" />
+            <el-link type="primary" style="font-size: smaller" href="/manage/news"> 新闻后台管理 </el-link>
           </section>
           <section class="right-footnote">
             <el-divider />
-            <el-text size="small" type="primary">当前版本：v1.1.0</el-text>
+            <el-text size="small" type="primary">当前版本：v1.1.2</el-text>
           </section>
         </el-aside>
       </el-container>
