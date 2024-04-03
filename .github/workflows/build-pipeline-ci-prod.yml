@@ -3,9 +3,8 @@ name: "Test & Build & Deploy: Automatically"
 on:
   push:
     tags:
-      - 'test-*'
-  schedule:
-    - cron: '0 20 * * *' # Every day at 4 AM (UTC+8)
+      - 'v*'
+      - 'Release*'
 
 jobs:
   Prior_Build:
@@ -67,7 +66,7 @@ jobs:
     steps:
       - name: Send Trigger
         run: |
-          response=$(curl -o /dev/null -s -w "%{http_code}\n" -u ${{ secrets.JENKINS_AUTH }} -X POST "https://${{ secrets.JENKINS_REPOSITORY }}/buildWithParameters?name=nasa-page&port=${{ secrets.JENKINS_PORT }}&image=${{ secrets.DOCKER_REPOSITORY }}:latest")
+          response=$(curl -o /dev/null -s -w "%{http_code}\n" -u ${{ secrets.JENKINS_AUTH }} -X POST "https://${{ secrets.JENKINS_REPOSITORY_PROD }}/buildWithParameters?name=nasa-page&port=${{ secrets.JENKINS_PORT }}&image=${{ secrets.DOCKER_REPOSITORY }}:latest")
           if [ "$response" -eq 201 ]; then
             echo "Build triggered successfully."
           else
