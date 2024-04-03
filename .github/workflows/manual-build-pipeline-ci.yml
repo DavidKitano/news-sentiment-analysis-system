@@ -1,4 +1,4 @@
-name: "Test & Build & Deploy: Manually"
+name: 'Test & Build & Deploy: Manually'
 
 on:
   workflow_dispatch:
@@ -53,7 +53,7 @@ jobs:
       - name: Docker Image Push
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-          
+
           docker build . --no-cache --file Dockerfile --tag ${{ secrets.DOCKER_REPOSITORY }}:latest
           docker push ${{ secrets.DOCKER_REPOSITORY }}:latest
 
@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Send Trigger
         run: |
-          response=$(curl -o /dev/null -s -w "%{http_code}\n" -u ${{ secrets.JENKINS_AUTH }} -X POST "https://${{ secrets.JENKINS_REPOSITORY }}/buildWithParameters?image=${{ secrets.DOCKER_REPOSITORY }}:latest")
+          response=$(curl -o /dev/null -s -w "%{http_code}\n" -u ${{ secrets.JENKINS_AUTH }} -X POST "https://${{ secrets.JENKINS_REPOSITORY }}/buildWithParameters?name=nasa-page&port=${{ secrets.JENKINS_PORT }}&image=${{ secrets.DOCKER_REPOSITORY }}:latest")
           if [ "$response" -eq 201 ]; then
             echo "Build triggered successfully."
           else
