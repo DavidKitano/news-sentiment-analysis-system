@@ -169,7 +169,7 @@
           </section>
           <section class="right-footnote">
             <el-divider />
-            <el-text size="small" type="primary">当前版本：v1.1.2</el-text>
+            <el-text size="small" type="primary">当前版本：v1.1.3β</el-text>
           </section>
         </el-aside>
       </el-container>
