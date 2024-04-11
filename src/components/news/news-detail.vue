@@ -40,7 +40,7 @@
           <news-comment-box :comments="realtimeCommentList" @on-update="flushNewsComment()" />
         </section>
         <el-divider />
-        <section class="comment-box">
+        <section class="comment-box" v-if="auth.isLogin">
           <el-form ref="ruleFormRef" :model="ruleForm" label-width="auto" status-icon :rules="rules">
             <el-form-item label="输入评论" prop="editingComment">
               <el-input
