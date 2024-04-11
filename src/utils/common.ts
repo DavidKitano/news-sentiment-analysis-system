@@ -17,7 +17,7 @@ export const isURL = (str: string | undefined) => {
  * @returns 是否为空
  */
 export const isDataEmpty = (data?: { [key: string]: any } | Array<any> | string) => {
-  if (!data || data === 'http://120.25.103.178:5136') {
+  if (!data || data === 'http://120.25.103.178:5136' || data === 'http://139.159.243.90:5136') {
     return true
   }
   if (Array.isArray(data)) {

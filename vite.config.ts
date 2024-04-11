@@ -82,7 +82,7 @@ export default defineConfig({
     port: 10101,
     proxy: {
       '/nsas-api': {
-        target: 'http://120.25.103.178:800',
+        target: 'http://139.159.243.90:800',
         ws: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/nsas-api/, '')
@@ -94,7 +94,7 @@ export default defineConfig({
     port: 10101,
     proxy: {
       '/nsas-api': {
-        target: 'http://120.25.103.178:800',
+        target: 'http://139.159.243.90:800',
         ws: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/nsas-api/, '')
