@@ -58,21 +58,24 @@
           <h1 align="center">该项目后端部分使用以下技术栈进行开发</h1>
           <el-image
             style="width: 33.3333%"
-            src="src\assets\images\backend1.png"
+            :src="backendImages[0]"
             :preview-src-list="backendImages"
             :initial-index="0"
+            loading="lazy"
           />
           <el-image
             style="width: 33.3333%"
-            src="src\assets\images\backend2.png"
+            :src="backendImages[1]"
             :preview-src-list="backendImages"
             :initial-index="1"
+            loading="lazy"
           />
           <el-image
             style="width: 33.3333%"
-            src="src\assets\images\backend3.png"
+            :src="backendImages[2]"
             :preview-src-list="backendImages"
             :initial-index="2"
+            loading="lazy"
           />
         </el-tab-pane>
       </el-tabs>
@@ -81,11 +84,7 @@
 </template>
 <script setup lang="ts">
 const currentTab = ref('front')
-const backendImages = ref([
-  'src/assets/images/backend1.png',
-  'src/assets/images/backend2.png',
-  'src/assets/images/backend3.png'
-])
+const backendImages = ['/about/backend1.png', '/about/backend2.png', '/about/backend3.png']
 </script>
 <style lang="scss" scoped>
 @media (min-width: 1024px) {
