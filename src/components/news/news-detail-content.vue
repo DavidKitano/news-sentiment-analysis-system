@@ -68,7 +68,7 @@
       </section>
       <el-divider />
       <section class="img-container">
-        <el-image :src="newsContent?.avatar" class="news-cover">
+        <el-image :src="newsContent?.avatar" class="news-cover" :preview-src-list="[newsContent?.avatar || '']">
           <template #error>
             <div class="image-slot err-block">
               <el-icon><i-ep-picture /></el-icon>
@@ -89,7 +89,13 @@
       <div class="carousel-images" v-if="newsInfo?.newsImg?.length">
         <el-carousel height="200px">
           <el-carousel-item v-for="imgItem in newsInfo?.newsImg" :key="imgItem.url">
-            <el-image :src="imgItem.url" fit="contain" style="width: 100%; height: 100%">
+            <el-image
+              :src="imgItem.url"
+              fit="contain"
+              style="width: 100%; height: 100%"
+              :preview-src-list="[imgItem.url || '']"
+              preview-teleported
+            >
               <template #error>
                 <div class="image-slot err-block">
                   <el-icon><i-ep-picture /></el-icon>
