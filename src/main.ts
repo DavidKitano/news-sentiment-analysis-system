@@ -33,6 +33,6 @@ app.use(router)
 // })
 
 app.config.globalProperties.$microApp = microApp
-app.config.globalProperties.$version = 'v1.2.4'
+app.config.globalProperties.$version = 'v1.2.4β'
 
 app.mount('#app')
