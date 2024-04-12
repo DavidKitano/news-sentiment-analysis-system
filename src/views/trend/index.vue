@@ -50,18 +50,33 @@
           </div>
         </nsas-box>
         <nsas-box class="content-box" v-loading="clusterLoading">
-          <el-image style="width: 100%" :src="clusterImageSrc" v-if="clusterImageSrc">
-            <template #error>
-              <div class="image-slot err-block">
-                <el-icon><i-ep-picture /></el-icon>
-              </div>
-            </template>
-            <template #placeholder>
-              <div class="image-slot err-block">
-                <el-icon class="is-loading"><i-ep-loading /></el-icon>
-              </div>
-            </template>
-          </el-image>
+          <template v-if="clusterImageSrc">
+            <h3 style="display: flex; align-items: center; justify-content: center; gap: 5px">
+              新闻关联程度
+              <el-tooltip placement="top">
+                <template #content>
+                  一个新闻有词频，每一个词频就是一个维度<br />
+                  比如 a : 1 | b : 2 | c : 3 <br />
+                  使用 TF-IDF 算法技术对新闻进行向量化操作，并将其被降维表示<br />
+                  然后使用 K-Means 算法对向量化新闻进行聚类操作<br />
+                  最后使用 PCA 算法降维后绘制为二维的关联图<br />
+                </template>
+                <el-icon><i-ep-question-filled /></el-icon>
+              </el-tooltip>
+            </h3>
+            <el-image style="width: 100%" :src="clusterImageSrc">
+              <template #error>
+                <div class="image-slot err-block">
+                  <el-icon><i-ep-picture /></el-icon>
+                </div>
+              </template>
+              <template #placeholder>
+                <div class="image-slot err-block">
+                  <el-icon class="is-loading"><i-ep-loading /></el-icon>
+                </div>
+              </template>
+            </el-image>
+          </template>
           <el-empty v-else description="暂无数据" />
         </nsas-box>
       </el-main>
