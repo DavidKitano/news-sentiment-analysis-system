@@ -46,6 +46,16 @@ const initChart = () => {
   })
 }
 
+onUpdated(() => {
+  pieChart.setOption({
+    series: [
+      {
+        data: props.datums
+      }
+    ]
+  })
+})
+
 onMounted(() => {
   initChart()
 })

@@ -169,7 +169,7 @@
           </section>
           <section class="right-footnote">
             <el-divider />
-            <el-text size="small" type="primary">当前版本：v1.2.2</el-text>
+            <el-text size="small" type="primary">当前版本：{{ version }}</el-text>
           </section>
         </el-aside>
       </el-container>
@@ -183,9 +183,13 @@ import { useAuth } from '@/stores/auth/auth'
 import { NsasThumbUp } from '@/assets/svg'
 import { useRoute, useRouter } from 'vue-router'
 
+const app = getCurrentInstance()
+
 const auth = useAuth()
 const route = useRoute()
 const router = useRouter()
+
+const version = app?.appContext.config.globalProperties.$version
 
 const isWelcomeShow = ref<boolean>(true)
 
